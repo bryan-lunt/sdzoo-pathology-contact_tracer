@@ -14,8 +14,6 @@ import org.sandiegozoo.pathology.database.domain.Infection;
 
 import junit.framework.TestCase;
 
-import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class BasicHibernateTest extends TestCase {
 
@@ -23,7 +21,6 @@ public class BasicHibernateTest extends TestCase {
 	
 	public void setUp(){
 		
-		java.util.logging.Logger.getLogger("org.hibernate").setLevel(java.util.logging.Level.SEVERE);
 		
 	     // A SessionFactory is set up once for an application
         sessionFactory = new Configuration()

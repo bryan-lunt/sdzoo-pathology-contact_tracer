@@ -66,6 +66,7 @@ public class InfectionHandler extends HibernateImportHandler {
 		}
 		
 		
+		
     	//Figure out if the Animal already exists in the database.
     	Animal theAnimal = new Animal();
     	theAnimal.setNativeID(animal_native_id);
@@ -80,6 +81,8 @@ public class InfectionHandler extends HibernateImportHandler {
 		theInfection.notes = notes;
 		theInfection.animal_id = theAnimal;
     	
+		
+		
     	session.save(theAnimal);
     	session.save(theInfection);
  

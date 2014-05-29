@@ -25,7 +25,6 @@ public class InfectionLoaderTest extends TestCase {
 	InfectionHandler my_handler;
 	
 	public void setUp(){
-		java.util.logging.Logger.getLogger("org.hibernate").setLevel(java.util.logging.Level.SEVERE);
 	     // A SessionFactory is set up once for an application
         sessionFactory = new Configuration()
                 .configure() // configures settings from hibernate.cfg.xml
