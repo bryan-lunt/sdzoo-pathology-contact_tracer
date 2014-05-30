@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -26,19 +27,19 @@ public class TimelineHandler extends HibernateImportHandler {
 	private class EntryStruct{
 		
 		public String animal_native_id;
-		public Date move_in;
-		public Date move_out;
+		public Calendar move_in;
+		public Calendar move_out;
 		public String enclosure_name;
 		
 		EntryStruct(String[] in) throws Exception{
 			animal_native_id = in[0].trim();
-			move_in = date_format.parse(in[1].trim());
+			move_in = new GregorianCalendar();
+			move_in.setTime(date_format.parse(in[1].trim()));
 			
 			//What if no move-out is available?
-			if(in[2] == null || in[2].trim().equals("")){
-				move_out = new Date();
-			}else{
-				move_out = date_format.parse(in[2].trim());
+			move_out = new GregorianCalendar();
+			if(in[2] != null && !in[2].trim().equals("")){
+				move_out.setTime(date_format.parse(in[2].trim()));
 			}
 			
 			enclosure_name = in[3].trim();
@@ -52,12 +53,12 @@ public class TimelineHandler extends HibernateImportHandler {
     	
     	//Figure out if the Animal and/or Enclosure already exist in the database.
     	Animal theAnimal = new Animal();
-    	theAnimal.setNativeID(one_file_entry.animal_native_id);
+    	theAnimal.native_ID = one_file_entry.animal_native_id;
     	theAnimal = PathDBUtil.completeOrCreateAnimal(theAnimal, session);
     	
     	//Figure out if the Enclosure already exists in the database.
     	Enclosure theEnclosure = new Enclosure();
-    	theEnclosure.setName(one_file_entry.enclosure_name);
+    	theEnclosure.name = one_file_entry.enclosure_name;
     	theEnclosure = PathDBUtil.completeOrCreateEnclosure(theEnclosure, session);
     	
     	//Finally create the housing and save it to the database

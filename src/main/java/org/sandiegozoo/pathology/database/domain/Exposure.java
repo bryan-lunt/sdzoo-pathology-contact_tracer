@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.Date;
+import java.util.Calendar;
 
 @Entity
 @Table(name = "Exposure")
@@ -28,14 +28,25 @@ public class Exposure {
 	
 	@Temporal(TemporalType.DATE)
 	@Column( name = "start_date" )
-	public Date start_date;
+	public Calendar start_date;
 	
 	@Temporal(TemporalType.DATE)
 	@Column( name = "end_date" )
-	public Date end_date;
+	public Calendar end_date;
+	
 	
 	public String toString(){
-		return "EXPOSURE(" + id +") ANIM: " + animal_id.getNativeID() + " : " + start_date + " : " + end_date;
+		return "EXPOSURE(" + id +") ANIM: " + animal_id.native_ID + " : " + start_date.getTime() + " : " + end_date.getTime() + " Duration:" + this.getDurationDays();
 	}
+	
+	public int getDurationDays(){
+		//Should return end_date - start_date, but that would be too easy, wouldn't it.
+		//Java has no timedelta or datedelta, so everyone implements their own. :'(
+		
+		long delta = end_date.getTimeInMillis() - start_date.getTimeInMillis();
+		return (int)java.lang.Math.ceil(delta / (1000.0*60*60*24));
+	}
+	
+	
 	
 }

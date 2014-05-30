@@ -11,7 +11,7 @@ public class PathDBUtil {
 	public static Animal completeOrCreateAnimal(Animal partial, Session session){
 		
 		Query myQ = session.createQuery( "from Animal where native_id = :nid" );
-		myQ.setText("nid", partial.getNativeID());
+		myQ.setText("nid", partial.native_ID);
 		
 		Animal retval = (Animal)myQ.uniqueResult();
 		
@@ -26,7 +26,7 @@ public class PathDBUtil {
 	public static Enclosure completeOrCreateEnclosure(Enclosure partial, Session session){
 		
 		Query myQ = session.createQuery( "from Enclosure where name = :nname");
-		myQ.setText("nname", partial.getName());
+		myQ.setText("nname", partial.name);
 		
 		Enclosure retval = (Enclosure)myQ.uniqueResult();
 		

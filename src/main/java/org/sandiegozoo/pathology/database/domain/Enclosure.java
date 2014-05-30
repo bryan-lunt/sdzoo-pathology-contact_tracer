@@ -13,7 +13,7 @@ public class Enclosure {
 	private long id;
 	
 	@Column( name = "name", unique = true )
-	private String name = null;
+	public String name = null;
 	
 	
 	public long getId() {
@@ -23,14 +23,9 @@ public class Enclosure {
 		id = in;
 	}
 	
-	
-	public String getName(){
-		return name;
-	}
-	public void setName(String in){
-		name = in;
-	}
-	
 	public Enclosure(){}
 	
+	public String toString(){
+		return "ENCLOSURE(" + id +") " + name;
+	}
 }

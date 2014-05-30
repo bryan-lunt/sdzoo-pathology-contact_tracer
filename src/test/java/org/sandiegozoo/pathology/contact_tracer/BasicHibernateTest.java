@@ -1,6 +1,6 @@
 package org.sandiegozoo.pathology.contact_tracer;
 
-import java.util.List;
+import java.util.*;
 
 
 import org.hibernate.Session;
@@ -33,7 +33,7 @@ public class BasicHibernateTest extends TestCase {
         session.beginTransaction();
         
         Enclosure tmp = new Enclosure();
-        tmp.setName("Temporary Enclosure");
+        tmp.name = "Temporary Enclosure";
         
         Animal paul = new Animal("Paul");
         
@@ -43,14 +43,14 @@ public class BasicHibernateTest extends TestCase {
         
         Housing paulHouse = new Housing();
         paulHouse.animal_id = paul;
-        paulHouse.move_in = new java.util.Date();
+        paulHouse.move_in = new GregorianCalendar();
         paulHouse.enc_id = tmp;
         
         Contamination foo = new Contamination();
-        foo.setEnclosure(tmp);
+        foo.enc_id = tmp;
         foo.source_inf_id = sick;
-        foo.setStartDate(new java.util.Date());
-        foo.setEndDate(new java.util.Date());
+        foo.start_date = new GregorianCalendar();
+        foo.end_date = new GregorianCalendar();
         
         
         
@@ -65,8 +65,8 @@ public class BasicHibernateTest extends TestCase {
         session = sessionFactory.openSession();
         session.beginTransaction();
         List result = session.createQuery( "from Contamination" ).list();
-        for ( Contamination event : (List<Contamination>) result ) {
-            System.out.println( "Cont Enc : " + event.getId() + " : " + event.getEnclosure().getName() + " : " + event.source_inf_id.name);
+        for ( Contamination one_contam : (List<Contamination>) result ) {
+            System.out.println( one_contam );
         }
         session.getTransaction().commit();
         session.close();

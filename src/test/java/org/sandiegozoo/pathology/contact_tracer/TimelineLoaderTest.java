@@ -54,8 +54,7 @@ public class TimelineLoaderTest extends TestCase {
         List result = session.createQuery( "from Housing" ).list();
         for ( Housing oneHouse : (List<Housing>) result ) {
         	
-        	System.out.println("One Housing : ANIMAL:" + oneHouse.animal_id.getNativeID() + " IN:" + oneHouse.move_in.toGMTString() + " OUT:" + oneHouse.move_out.toGMTString() + " NAME:" + oneHouse.enc_id.getName());
-       
+        	System.out.println("One Housing : " + oneHouse);
         }
         
         List animals = session.createQuery("from Animal where native_id = 12345").list();

@@ -55,28 +55,26 @@ public class ContactTracer {
 			//find all enclosures this animal has been in while infected.
 			Query findHousing = session.createQuery("from Housing where animal_id.id = :aid and move_in <= :end and move_out >= :begin");
 			findHousing.setLong("aid", one_inf.animal_id.getId());
-			findHousing.setDate("end", one_inf.end_date);
-			findHousing.setDate("begin", one_inf.onset_date);
+			findHousing.setCalendar("end", one_inf.end_date);
+			findHousing.setCalendar("begin", one_inf.onset_date);
 			
 			List<Housing> housing_iter = (List<Housing>)findHousing.list();
 			for(Housing one_housing : housing_iter){
 				//Housing one_housing = housing_iter.next();
 				
-				Date contamination_begin = date_max(one_inf.onset_date, one_housing.move_in);
-				Date direct_contamination_end = date_min(one_inf.end_date, one_housing.move_out);
-				Date contamination_end;
+				Calendar contamination_begin = date_max(one_inf.onset_date, one_housing.move_in);
+				Calendar direct_contamination_end = date_min(one_inf.end_date, one_housing.move_out);
+				Calendar contamination_end;
 				
 				//We have to do this rigamarole because we can't just add to a date.
-				Calendar contamination_end_calendar = new GregorianCalendar();
-				contamination_end_calendar.setTime(direct_contamination_end);
-				contamination_end_calendar.add(Calendar.DATE, one_inf.days_linger);
-				contamination_end = contamination_end_calendar.getTime();
+				contamination_end = (Calendar)direct_contamination_end.clone();
+				contamination_end.add(Calendar.DATE, one_inf.days_linger);
 				
 				Contamination oneContamination = new Contamination();
 				oneContamination.source_inf_id = one_inf;
-				oneContamination.setEnclosure(one_housing.enc_id);
-				oneContamination.setStartDate(contamination_begin);
-				oneContamination.setEndDate(contamination_end);
+				oneContamination.enc_id = one_housing.enc_id;
+				oneContamination.start_date = contamination_begin;
+				oneContamination.end_date = contamination_end;
 				
 				session.save(oneContamination);
 			}
@@ -91,9 +89,19 @@ public class ContactTracer {
 	}
 	
 
-	public void process_exposures(){
+	public void process_exposures(){process_exposures(true);}
+	
+	public void process_exposures(boolean truncate){
 		Session session = factory.openSession();
 		session.beginTransaction();
+		
+		//Start with a clean slate?
+		if(truncate){
+			Query myQ = session.createQuery("delete from Exposure");
+			myQ.executeUpdate();
+			session.getTransaction().commit();
+			session.beginTransaction();
+		}
 		
 		Query find_contaminations = session.createQuery("from Contamination");
         List<Contamination> contaminations = (List<Contamination>)find_contaminations.list();
@@ -110,17 +118,17 @@ public class ContactTracer {
         		find_contacts.setLong("aid", original_animal.getId());
         	}
         	//used in either case
-        	find_contacts.setLong("eid",one_contam.getEnclosure().getId());
-        	find_contacts.setDate("begin", one_contam.getStartDate());
-        	find_contacts.setDate("end", one_contam.getEndDate());
+        	find_contacts.setLong("eid",one_contam.enc_id.getId());
+        	find_contacts.setCalendar("begin", one_contam.start_date);
+        	find_contacts.setCalendar("end", one_contam.end_date);
         	
         	
         	List<Housing> overlapping_housing = (List<Housing>)find_contacts.list();
         	for(Housing one_house : overlapping_housing){
         		
         		//TODO: Continue here
-        		Date exposure_begin_date = date_max(one_house.move_in, one_contam.getStartDate());
-        		Date exposure_end_date = date_min(one_house.move_out, one_contam.getEndDate());
+        		Calendar exposure_begin_date = date_max(one_house.move_in, one_contam.start_date);//TODO:remove the gettime
+        		Calendar exposure_end_date = date_min(one_house.move_out, one_contam.end_date);//TODO: remove the gettime once we switch everything to Calendar
         		
         		Exposure one_exposure = new Exposure();
         		
@@ -140,18 +148,11 @@ public class ContactTracer {
 	}
 	
 	
-	private Date date_min(Date one, Date two){
-		if(one.before(two))
-			return one;
-		else
-			return two;
+	private Calendar date_min(Calendar one, Calendar two){
+		return (one.compareTo(two) < 0) ? one : two;
 	}
-	
-	private Date date_max(Date one, Date two){
-		if(one.before(two))
-			return two;
-		else
-			return one;
+	private Calendar date_max(Calendar one, Calendar two){
+		return (one.compareTo(two) < 0) ? two : one;
 	}
 	
 }

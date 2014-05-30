@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -34,14 +35,16 @@ public class ContaminationHandler extends HibernateImportHandler {
 		
 		
 		String enclosure_id = nextLine[0];
-		Date start_date = date_format.parse(nextLine[1]);
+		Calendar start_date = new GregorianCalendar();
+		start_date.setTime(date_format.parse(nextLine[1]));
 		
-		Date end_date = null;
+		Calendar end_date = null;
 		if(nextLine.length >= 3){
 			try{
-				end_date = date_format.parse(nextLine[2]);
+				end_date = new GregorianCalendar();
+				end_date.setTime(date_format.parse(nextLine[2]));
 			}catch(Exception e){
-				end_date = new Date();//TODO: Should I make it tomorrow?
+				end_date = new GregorianCalendar();//TODO: Should I make it tomorrow?
 			}
 		}
 		
@@ -51,14 +54,14 @@ public class ContaminationHandler extends HibernateImportHandler {
 		}
 		
     	Enclosure theEnclosure = new Enclosure();
-    	theEnclosure.setName(enclosure_id);
+    	theEnclosure.name = enclosure_id;
     	theEnclosure = PathDBUtil.completeOrCreateEnclosure(theEnclosure, session);
     	
     	Contamination theContamination = new Contamination();
-    	theContamination.setEnclosure(theEnclosure);
-    	theContamination.setStartDate(start_date);
-    	theContamination.setEndDate(end_date);
-    	theContamination.setIsDirect(is_direct);
+    	theContamination.enc_id = theEnclosure;
+    	theContamination.start_date = start_date;
+    	theContamination.end_date = end_date;
+    	theContamination.is_direct = is_direct;
     	
     	session.save(theEnclosure);
     	session.save(theContamination);

@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -39,20 +40,24 @@ public class InfectionHandler extends HibernateImportHandler {
 		}
 
 		
-		Date onset_date = date_format.parse(nextLine[2]);
+		Calendar onset_date = new GregorianCalendar();
+		onset_date.setTime(date_format.parse(nextLine[2]));
 		
-		Date cure_date = new Date();//TODO: Should it really be today?
+		Calendar cure_date = new GregorianCalendar();//TODO: Should it really be today?
 		if(nextLine.length >= 4){
 			try{
-				cure_date = date_format.parse(nextLine[3]);
+				cure_date.setTime(date_format.parse(nextLine[3]));
 			}catch(Exception e){}
 		}
 		
-		Date diagnosis_date = null;
+		Calendar diagnosis_date = null;
 		if(nextLine.length >= 5){
 			try{
-				diagnosis_date = date_format.parse(nextLine[4]);
-			}catch(Exception e){}
+				//Convoluted, but ensures diagnosis_date remains null unless everything works.
+				//I could null it out in the catch clause though. (But that then risks getting missed/separated?)
+				diagnosis_date = new GregorianCalendar();
+				diagnosis_date.setTime(date_format.parse(nextLine[4]));
+			}catch(Exception e){diagnosis_date = null;}
 		}
 		
 		String name = null;
@@ -69,7 +74,7 @@ public class InfectionHandler extends HibernateImportHandler {
 		
     	//Figure out if the Animal already exists in the database.
     	Animal theAnimal = new Animal();
-    	theAnimal.setNativeID(animal_native_id);
+    	theAnimal.native_ID = animal_native_id;
     	theAnimal = PathDBUtil.completeOrCreateAnimal(theAnimal, session);
     	
 		Infection theInfection = new Infection();

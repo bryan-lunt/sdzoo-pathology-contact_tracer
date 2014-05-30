@@ -55,17 +55,13 @@ public class InfectionLoaderTest extends TestCase {
         List result = session.createQuery( "from Infection" ).list();
         for ( Infection one_inf : (List<Infection>) result ) {
         	
-        	System.out.println("ONE INFECTION:");
-        	System.out.println(one_inf.animal_id.getNativeID());
-        	System.out.println(one_inf.onset_date);
-        	System.out.println(one_inf.end_date);
-        	System.out.println(one_inf.getId());
+        	System.out.println("ONE INFECTION: " + one_inf);
         	
         }
         
         List animals = session.createQuery("from Animal").list();
         for( Animal an : (List<Animal>)animals){
-        	System.out.println("Animal created implicitly from infections: " + an.getNativeID());
+        	System.out.println("Animal created implicitly from infections: " + an);
         }
         
         session.getTransaction().commit();

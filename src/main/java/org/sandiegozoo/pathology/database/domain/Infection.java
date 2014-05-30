@@ -23,15 +23,15 @@ public class Infection {
 	
 	@Temporal(TemporalType.DATE)
 	@Column( name = "onset_date" )
-	public Date onset_date;
+	public Calendar onset_date;
 	
 	@Temporal(TemporalType.DATE)
 	@Column( name = "diagnosis_date" )
-	public Date diagnosis_date;
+	public Calendar diagnosis_date;
 	
 	@Temporal(TemporalType.DATE)
 	@Column( name = "end_date" )
-	public Date end_date;
+	public Calendar end_date;
 	
 	@Column( name = "linger" )
 	public int days_linger = 0;
@@ -48,5 +48,8 @@ public class Infection {
 		id = in;
 	}
 	
+	public String toString(){
+		return "INFECTION(" + id + ") ANIM: " + animal_id + " [ " + onset_date.getTime() + " : " + end_date.getTime() + " ]  DoDx:" + (diagnosis_date != null ? diagnosis_date.getTime() : "NONE") + " lingers " + days_linger + " days.";
+	}
 	
 }
