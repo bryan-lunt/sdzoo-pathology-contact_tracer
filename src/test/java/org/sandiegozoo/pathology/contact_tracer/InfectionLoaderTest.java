@@ -1,28 +1,20 @@
 package org.sandiegozoo.pathology.contact_tracer;
 
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.sandiegozoo.pathology.contact_tracer.dataimport.CSVImporter;
-import org.sandiegozoo.pathology.contact_tracer.dataimport.InfectionHandler;
-import org.sandiegozoo.pathology.contact_tracer.dataimport.TimelineHandler;
-import org.sandiegozoo.pathology.database.domain.Animal;
-import org.sandiegozoo.pathology.database.domain.Contamination;
-import org.sandiegozoo.pathology.database.domain.Enclosure;
-import org.sandiegozoo.pathology.database.domain.Housing;
-import org.sandiegozoo.pathology.database.domain.Infection;
+import org.sandiegozoo.pathology.contact_tracer.dataimport.*;
+import org.sandiegozoo.pathology.database.domain.*;
 
 import junit.framework.TestCase;
 
 public class InfectionLoaderTest extends TestCase {
 
 	SessionFactory sessionFactory;
-	CSVImporter my_csv_reader;
-	InfectionHandler my_handler;
+	CTIOHandler infection_reader;
 	
 	public void setUp(){
 	     // A SessionFactory is set up once for an application
@@ -30,11 +22,8 @@ public class InfectionLoaderTest extends TestCase {
                 .configure() // configures settings from hibernate.cfg.xml
                 .buildSessionFactory();
         
-        Reader theReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("basic_infections.txt"));
-        my_csv_reader = new CSVImporter();
-        my_csv_reader.setSource(theReader);
-        
-        my_handler = new InfectionHandler(sessionFactory);
+        infection_reader = new InfectionHandler(new File(getClass().getClassLoader().getResource("basic_infections.txt").getFile()));
+        infection_reader.setSessionFactory(sessionFactory);
        
 	}
 	
@@ -44,7 +33,7 @@ public class InfectionLoaderTest extends TestCase {
         
         //Attempt loading the file
         try {
-        	my_csv_reader.readInto(my_handler);
+        	infection_reader.call();
 		} catch (Exception e) {
 			this.fail(e.getMessage());
 		}

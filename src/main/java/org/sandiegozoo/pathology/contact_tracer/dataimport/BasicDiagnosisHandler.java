@@ -15,11 +15,16 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
-public class InfectionHandler extends CSVInput {
+public class BasicDiagnosisHandler extends CSVInput {
 
-	public InfectionHandler(File in) {
+	private int days_before;
+	private int linger_days;
+	
+	public BasicDiagnosisHandler(File in, int days_before_in, int days_linger) {
 		super( in);
-		// TODO Auto-generated constructor stub
+		linger_days = days_linger;
+		days_before = days_before_in;
+		
 	}
 
 	static DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
@@ -28,49 +33,17 @@ public class InfectionHandler extends CSVInput {
 	
 	public void handle_strarray(String[] nextLine) throws Exception{
         
-		//FORMAT: Animal_ID, linger_days, onset_date, (cure_date <default to never/today>, (diagnosis_date <default to today>, (name <no default>, ( notes <no default>))))
+		//FORMAT: Animal_ID, DoDx, (name of disease?)
 		
 		String animal_native_id = nextLine[0].trim();
 		
-		int linger_days = 0;
-
-
-		if(nextLine[1] != null && !"".equals(nextLine[1].trim())){
-			linger_days = Integer.parseInt(nextLine[1].trim());
-		}
-
+		Calendar diagnosis_date = new GregorianCalendar();
+		diagnosis_date.setTime(date_format.parse(nextLine[1]));
 		
-		Calendar onset_date = new GregorianCalendar();
-		onset_date.setTime(date_format.parse(nextLine[2]));
+		Calendar onset_date = (Calendar)diagnosis_date.clone();
+		onset_date.add(Calendar.DATE, -1 * days_before);
 		
 		Calendar cure_date = new GregorianCalendar();//TODO: Should it really be today?
-		if(nextLine.length >= 4){
-			try{
-				cure_date.setTime(date_format.parse(nextLine[3]));
-			}catch(Exception e){}
-		}
-		
-		Calendar diagnosis_date = null;
-		if(nextLine.length >= 5){
-			try{
-				//Convoluted, but ensures diagnosis_date remains null unless everything works.
-				//I could null it out in the catch clause though. (But that then risks getting missed/separated?)
-				diagnosis_date = new GregorianCalendar();
-				diagnosis_date.setTime(date_format.parse(nextLine[4]));
-			}catch(Exception e){diagnosis_date = null;}
-		}
-		
-		String name = null;
-		if(nextLine.length >= 6){
-			name = nextLine[5];
-		}
-		
-		String notes = null;
-		if(nextLine.length >= 7){
-			notes = nextLine[6];
-		}
-		
-		
 		
     	//Figure out if the Animal already exists in the database.
     	Animal theAnimal = new Animal();
@@ -82,8 +55,8 @@ public class InfectionHandler extends CSVInput {
 		theInfection.onset_date = onset_date;
 		theInfection.end_date = cure_date;
 		theInfection.diagnosis_date = diagnosis_date;
-		theInfection.name = name;
-		theInfection.notes = notes;
+		theInfection.name = null;
+		theInfection.notes = null;
 		theInfection.animal_id = theAnimal;
     	
 		

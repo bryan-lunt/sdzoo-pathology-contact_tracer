@@ -15,10 +15,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
-public class TimelineHandler extends HibernateImportHandler {
+public class TimelineHandler extends CSVInput {
 
-	public TimelineHandler(SessionFactory sessionFact) {
-		super(sessionFact);
+	public TimelineHandler(File in) {
+		super(in);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -47,7 +47,7 @@ public class TimelineHandler extends HibernateImportHandler {
 		
 	}
 	
-	public void handle(String[] nextLine) throws Exception{
+	public void handle_strarray(String[] nextLine) throws Exception{
         	
     	EntryStruct one_file_entry = new EntryStruct(nextLine);
     	

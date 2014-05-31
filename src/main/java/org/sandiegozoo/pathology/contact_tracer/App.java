@@ -1,9 +1,7 @@
 package org.sandiegozoo.pathology.contact_tracer;
 
-import org.sandiegozoo.pathology.contact_tracer.dataexport.CSVExporter;
-import org.sandiegozoo.pathology.contact_tracer.dataexport.ExposureFormat;
-import org.sandiegozoo.pathology.contact_tracer.dataimport.CSVImporter;
-import org.sandiegozoo.pathology.contact_tracer.dataimport.DataImport;
+import org.sandiegozoo.pathology.contact_tracer.dataexport.*;
+import org.sandiegozoo.pathology.contact_tracer.dataimport.*;
 import org.sandiegozoo.pathology.contact_tracer.gui.CTMainFrame;
 import org.sandiegozoo.pathology.database.domain.*;
 
@@ -13,7 +11,7 @@ import org.hibernate.*;
 import org.hibernate.cfg.Configuration;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
@@ -45,16 +43,16 @@ public class App implements Callable<Object>
     	App MAIN = new App();
    	 
        if(cmd.hasOption("t")){
-	       MAIN.timeline_file = new File(cmd.getOptionValue( "t" ));
+	       MAIN.input_handlers.add(new TimelineHandler(new File(cmd.getOptionValue( "t" ))));
        }
        
        
        if(cmd.hasOption("i")){
-	      MAIN.infection_file = new File(cmd.getOptionValue("i"));
+    	  MAIN.input_handlers.add(new InfectionHandler(new File(cmd.getOptionValue( "i"))));
        }
        
        if(cmd.hasOption("o")){
-    	   MAIN.exposure_output_file = new File(cmd.getOptionValue("o"));
+    	   MAIN.input_handlers.add(new ContaminationHandler(new File(cmd.getOptionValue("c"))));
        } 
        //Main business logic!
        MAIN.call();
@@ -64,13 +62,15 @@ public class App implements Callable<Object>
     
     public File exposure_output_file = null;
     public File contamination_output_file = null;
+    /*
     public File timeline_file = null;
     public File infection_file = null;
     public File contamination_file = null;
     public File limit_enclosures_file = null;
+    */
+    public List<CTIOHandler> input_handlers = new ArrayList<CTIOHandler>();
     
     private SessionFactory sessionFactory;
-    private DataImport myImporter;
     
     public App(){
 // A SessionFactory is set up once for an application
@@ -78,26 +78,15 @@ public class App implements Callable<Object>
     	sessionFactory = new Configuration()
         .configure() // configures settings from hibernate.cfg.xml
         .buildSessionFactory();
-    	myImporter = new DataImport(sessionFactory);
-    	
-    	
     	
     }
     
     public Object call() throws Exception{
-    	//Load the various infiles
-    	System.err.println("LOADING TIMELINE");
-	    myImporter.loadTimelineFile(timeline_file);
-	    
-	    if(infection_file != null){
-	    	System.err.println("LOADING INFECTIONS");
-	    	myImporter.loadInfectionFile(infection_file);
-	    }
-	    
-	    if(contamination_file != null){
-	    	System.err.println("LOADING CONTAMINATIONS");
-	    	myImporter.loadContaminationFile(contamination_file);
-	    }
+    	
+    	for(CTIOHandler one_input : input_handlers){
+    		one_input.setSessionFactory(sessionFactory);
+    		one_input.call();
+    	}
 	    
     	
     	

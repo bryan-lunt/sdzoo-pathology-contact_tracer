@@ -15,10 +15,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 
-public class ContaminationHandler extends HibernateImportHandler {
+public class ContaminationHandler extends CSVInput {
 
-	public ContaminationHandler(SessionFactory sessionFact) {
-		super(sessionFact);
+	public ContaminationHandler(File in) {
+		super( in);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -26,7 +26,7 @@ public class ContaminationHandler extends HibernateImportHandler {
 	
 
 	
-	public void handle(String[] nextLine) throws Exception{
+	public void handle_strarray(String[] nextLine) throws Exception{
         
 		
 		
@@ -66,25 +66,9 @@ public class ContaminationHandler extends HibernateImportHandler {
     	session.save(theEnclosure);
     	session.save(theContamination);
 		
-		
- 
 	}
 	
 	
-	private boolean boolean_helper(String in){
-		if(in == null || "".equals(in.trim())){
-			return false;
-		}
-		
-		try{
-			return !(Integer.parseInt(in.trim()) != 0);
-		}catch(Exception e){}
-		
-		try{
-			return Boolean.parseBoolean(in.trim());
-		}catch(Exception e){}
-		
-		return false;
-	}
+	
 }
 
