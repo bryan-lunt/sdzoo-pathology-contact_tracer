@@ -98,6 +98,12 @@ public class App implements Callable<Object>
         System.err.println("FINISHED CONTACT TRACER");
         
         /*
+         * Filtering
+         */
+        
+        
+        
+        /*
          * OUTPUT
          */
         Session session = sessionFactory.openSession();

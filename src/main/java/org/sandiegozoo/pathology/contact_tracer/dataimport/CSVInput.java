@@ -21,6 +21,14 @@ public abstract class CSVInput extends CTIOHandler {
 		}
 	}
 	
+	public CSVInput(Reader inputReader){
+		try{
+			myreader = new CSVReader(inputReader);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void begin(){
 		session = factory.openSession();
 		session.beginTransaction();

@@ -33,9 +33,11 @@ public class ContactTracer {
 		factory = fact;
 	}
 	
-	public void process_contaminations(){
-		process_contaminations(true);
-	}
+	
+	
+	
+	
+	public void process_contaminations(){process_contaminations(true);}
 	public void process_contaminations(boolean truncate){
 		Session session = factory.openSession();
 		Transaction myT = session.beginTransaction();
@@ -90,7 +92,6 @@ public class ContactTracer {
 	
 
 	public void process_exposures(){process_exposures(true);}
-	
 	public void process_exposures(boolean truncate){
 		Session session = factory.openSession();
 		session.beginTransaction();

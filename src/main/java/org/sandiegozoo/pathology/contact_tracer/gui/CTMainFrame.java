@@ -89,9 +89,11 @@ public class CTMainFrame extends JFrame {
 			
 			File diagnosis_file = ((FileSelectorPanel)subject.getNamed("diagnosis_file")).getSelectedFile();
 			if(diagnosis_file != null){
+				//TODO: actually use the values from the spinners.
 				BetaGammaSpinners spinners = ((BetaGammaSpinners)subject.getNamed("default_values"));
-				System.err.println("FOOBAR : " + spinners.beta_spin.getValue());
-				myApp.input_handlers.add(new BasicDiagnosisHandler(diagnosis_file,0,0));//spinners.beta_spin.getValue(),spinners.gamma_spin.getValue()));
+				int beta = ((Integer)spinners.beta_spin.getValue()).intValue();
+				int gamma = ((Integer)spinners.gamma_spin.getValue()).intValue();
+				myApp.input_handlers.add(new BasicDiagnosisHandler(diagnosis_file,beta,gamma));
 			}
 			//See advanced version if you want other input files.
 			
@@ -175,9 +177,17 @@ public class CTMainFrame extends JFrame {
 		advancedPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
 		advancedPanel.addNamed("contamination_file", new FileSelectorPanel("Other Enclosure Contaminations (ex: Environmental) File (Optional)"));
 		
-		JButton advancedGo = new JButton(new AdvancedGoAction(advancedPanel));//TODO: Swap out for an action.
-		advancedPanel.addNamed("go_button", advancedGo);
 		advancedPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+		
+		NamedComponentPanel advancedGoPanel = new NamedComponentPanel();
+		advancedGoPanel.setLayout(new BorderLayout());
+		
+		JButton advancedGo = new JButton(new AdvancedGoAction(advancedPanel));//TODO: Swap out for an action.
+		advancedGoPanel.addNamed("go_button", advancedGo);
+		advancedPanel.addNamed("go_panel",advancedGoPanel);
+		
+		advancedPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+		
 	}
 	
 
@@ -198,8 +208,15 @@ public class CTMainFrame extends JFrame {
 		basicPanel.addNamed("default_values", new BetaGammaSpinners());
 		basicPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
 		
+		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+		
+		NamedComponentPanel basicGoPanel = new NamedComponentPanel();
+		basicGoPanel.setLayout(new BorderLayout());
+		
 		JButton basicGo = new JButton(new BasicGoAction(basicPanel));
-		basicPanel.addNamed("go_button", basicGo);
+		basicGoPanel.addNamed("go_button", basicGo);
+		basicPanel.addNamed("go_panel", basicGoPanel);
+		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 	}
 	
