@@ -106,27 +106,19 @@ public class App implements Callable<Object>
         /*
          * OUTPUT
          */
-        Session session = sessionFactory.openSession();
         
-        //EXPOSURES
-        Query find_exposures = session.createQuery("from Exposure");
-        List<Exposure> my_exposures = (List<Exposure>)find_exposures.list();
-        
-        CSVExporter theExporter = new CSVExporter();
-        Writer theWriter;
+        ExposureWriter my_e_writer;
         if(this.exposure_output_file != null){
-	        theWriter = new FileWriter(this.exposure_output_file);
+        	my_e_writer = new ExposureWriter(this.exposure_output_file);
         }else{
-        	theWriter = new PrintWriter(System.out);
-        }
-        theExporter.setDestination(theWriter);
-        theExporter.writeCSV(new ExposureFormat(my_exposures));
+        	my_e_writer = new ExposureWriter(new PrintWriter(System.out));
+       }
+       
+       my_e_writer.setSessionFactory(sessionFactory);
+       my_e_writer.call();
        
         //CONTAMINATIONS (if requested)
         
-        
-        
-        session.close();
         
         return null;
     }

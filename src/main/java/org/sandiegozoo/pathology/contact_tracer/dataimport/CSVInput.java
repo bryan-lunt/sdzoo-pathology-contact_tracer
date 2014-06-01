@@ -37,6 +37,9 @@ public abstract class CSVInput extends CTIOHandler {
 	public void done(){
 		session.getTransaction().commit();
         session.close();
+        try{
+        	myreader.close();
+        }catch(Exception e){}
 	}
 	
 	public void handle() throws Exception {

@@ -47,6 +47,9 @@ public abstract class CSVOutput extends CTIOHandler {
 	public void done(){
 		session.getTransaction().commit();
         session.close();
+        try{
+        	mywriter.close();
+        }catch(Exception e){}
 	}
 	
 	public void handle() throws Exception {
@@ -55,7 +58,7 @@ public abstract class CSVOutput extends CTIOHandler {
 		
         try{
 	        for(Object o : results){
-	        	this.handle_object(o);
+	        	mywriter.writeNext(this.handle_object(o));
 	        }
         }finally{
         }

@@ -13,11 +13,12 @@ public class ExposureWriter extends CSVOutput{
 
 	public ExposureWriter(File outputFile) {
 		super(outputFile);
-		// TODO Auto-generated constructor stub
+		this.setQuery("from Exposure");
 	}
 	
 	public ExposureWriter(Writer outWriter){
 		super(outWriter);
+		this.setQuery("from Exposure");
 	}
 
 	static DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
