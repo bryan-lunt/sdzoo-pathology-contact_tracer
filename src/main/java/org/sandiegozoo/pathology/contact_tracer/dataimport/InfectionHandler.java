@@ -28,7 +28,7 @@ public class InfectionHandler extends CSVInput {
 	
 	public void handle_strarray(String[] nextLine) throws Exception{
         
-		//FORMAT: Animal_ID, linger_days, onset_date, (cure_date <default to never/today>, (diagnosis_date <default to today>, (name <no default>, ( notes <no default>))))
+		//FORMAT: Animal_Native_ID, linger_days, onset_date, (cure_date <default to never/today>, (diagnosis_date <default to today>, (name <no default>, ( notes <no default>))))
 		
 		String animal_native_id = nextLine[0].trim();
 		

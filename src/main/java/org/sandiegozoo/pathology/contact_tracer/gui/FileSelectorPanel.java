@@ -1,5 +1,6 @@
 package org.sandiegozoo.pathology.contact_tracer.gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
@@ -58,28 +59,44 @@ public class FileSelectorPanel extends JPanel {
 		}
 	}
 	
+	private static final int MARGIN = 5;
+	private static final int SEPARATION = 10;
+	
 	public FileSelectorPanel(String inTitle){
 		
-		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		
-		title_label = new JLabel();
-		this.setTitle(inTitle);
+		SpringLayout my_spring = new SpringLayout();
+		this.setLayout(my_spring);
 		
-		this.add(title_label);
-		
-		subpanel = new JPanel();
-		subpanel.setLayout(new BoxLayout(subpanel,BoxLayout.X_AXIS));
-		
+		title_label = new JLabel(inTitle);
+
 		filename_display = new JTextField();
 		filename_display.setEditable(false);
-		
-		subpanel.add(filename_display);
+		filename_display.setMinimumSize(new Dimension());
 		
 		choose_button = new JButton(new FileSelectorPanelAction());
 		
-		subpanel.add(choose_button);
+
+		this.add(title_label);
+		this.add(filename_display);
+		this.add(choose_button);
 		
-		this.add(subpanel);
+		this.setTitle(inTitle);
+		
+		my_spring.putConstraint(SpringLayout.NORTH, title_label, MARGIN , SpringLayout.NORTH, this);
+		my_spring.putConstraint(SpringLayout.WEST, title_label, MARGIN , SpringLayout.WEST, this);
+		my_spring.putConstraint(SpringLayout.WEST, filename_display, MARGIN, SpringLayout.WEST, this);
+		
+		
+		my_spring.putConstraint(SpringLayout.NORTH, filename_display, SEPARATION, SpringLayout.SOUTH, title_label);
+		my_spring.putConstraint(SpringLayout.NORTH, choose_button, SEPARATION, SpringLayout.SOUTH, title_label);
+		
+		my_spring.putConstraint(SpringLayout.WEST, choose_button, SEPARATION, SpringLayout.EAST, filename_display);
+		
+		my_spring.putConstraint(SpringLayout.EAST, this, MARGIN, SpringLayout.EAST, choose_button);
+		my_spring.putConstraint(SpringLayout.SOUTH, this,  MARGIN, SpringLayout.SOUTH, filename_display);
+		
+		
 	}
 	
 }

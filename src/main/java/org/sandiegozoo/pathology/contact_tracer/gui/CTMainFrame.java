@@ -20,8 +20,38 @@ public class CTMainFrame extends JFrame {
 	private NamedComponentPanel basicPanel;
 	private NamedComponentPanel advancedPanel;
 	
-	//TODO: Add an icon?
-	class AdvancedGoAction extends AbstractAction {
+	abstract class GoAction extends AbstractAction {
+		public GoAction(String in){
+			super(in);
+		}
+		
+		protected App myApp;
+		
+		protected void createApp(){
+			myApp = new App();
+		}
+		
+		protected void go(){
+			setEnabled(false);
+			
+			new Thread(){
+				public void run(){
+					try{
+						myApp.call();
+						JOptionPane.showMessageDialog(null, "Finished", "Done", JOptionPane.INFORMATION_MESSAGE);
+					}catch(Exception e){
+						System.err.println(e);
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}finally{
+						setEnabled(true);
+					}
+				}
+			}.start();
+		}
+	}
+
+	class AdvancedGoAction extends GoAction {
 		
 		NamedComponentPanel subject;
 		
@@ -31,7 +61,7 @@ public class CTMainFrame extends JFrame {
 		}
 		
 		public void actionPerformed(ActionEvent arg0) {
-			App myApp = new App();
+			createApp();
 			
 			myApp.exposure_output_file = ((FileSelectorPanel)subject.getNamed("output_file")).getSelectedFile();
 			
@@ -55,19 +85,13 @@ public class CTMainFrame extends JFrame {
 			}
 			
 			
-			//TODO: Use a background thread for this.
-			try{
-				myApp.call();
-			}catch(Exception e){
-				System.err.println(e);
-				e.printStackTrace();
-			}
+			go();
 			
 		}
 		
 	}
 	
-	class BasicGoAction extends AbstractAction {
+	class BasicGoAction extends GoAction {
 		
 		NamedComponentPanel subject;
 		
@@ -77,7 +101,7 @@ public class CTMainFrame extends JFrame {
 		}
 		
 		public void actionPerformed(ActionEvent arg0) {
-			App myApp = new App();
+			createApp();
 			
 			myApp.exposure_output_file = ((FileSelectorPanel)subject.getNamed("output_file")).getSelectedFile();
 			
@@ -97,13 +121,7 @@ public class CTMainFrame extends JFrame {
 			}
 			//See advanced version if you want other input files.
 			
-			//TODO: Use a background thread for this.
-			try{
-				myApp.call();
-			}catch(Exception e){
-				System.err.println(e);
-				e.printStackTrace();
-			}
+			go();
 			
 		}
 		
@@ -154,6 +172,8 @@ public class CTMainFrame extends JFrame {
 		
 		this.add(comboBoxPanel, BorderLayout.NORTH);
 		this.add(cards, BorderLayout.CENTER);
+		
+		this.pack();
 		
 		this.setSize(this.getPreferredSize());
 		
@@ -226,6 +246,9 @@ public class CTMainFrame extends JFrame {
 		public JSpinner gamma_spin;
 		
 		public BetaGammaSpinners(){
+			
+			SpringLayout bg_spin_layout = new SpringLayout();
+			
 			JLabel beta_label = new JLabel("Contagious BETA days before DoDx");
 			this.add(beta_label);
 			
@@ -239,6 +262,23 @@ public class CTMainFrame extends JFrame {
 			gamma_spin = new JSpinner(new SpinnerNumberModel(0,0, 1000000, 1));
 			gamma_label.setLabelFor(gamma_spin);
 			this.add(gamma_spin);
+			
+			
+			bg_spin_layout.putConstraint(SpringLayout.NORTH, beta_label, 5, SpringLayout.NORTH, this);
+			bg_spin_layout.putConstraint(SpringLayout.NORTH, beta_spin, 5, SpringLayout.NORTH, this);
+			bg_spin_layout.putConstraint(SpringLayout.NORTH, gamma_label, 5, SpringLayout.NORTH, this);
+			bg_spin_layout.putConstraint(SpringLayout.NORTH, gamma_spin, 5, SpringLayout.NORTH, this);
+			
+			bg_spin_layout.putConstraint(SpringLayout.WEST, beta_label, 5, SpringLayout.WEST, this);
+			bg_spin_layout.putConstraint(SpringLayout.WEST, beta_spin, 5, SpringLayout.EAST, beta_label);
+			bg_spin_layout.putConstraint(SpringLayout.WEST, gamma_label, 5, SpringLayout.EAST, beta_spin);
+			bg_spin_layout.putConstraint(SpringLayout.WEST, gamma_spin, 5, SpringLayout.EAST, gamma_label);
+			bg_spin_layout.putConstraint(SpringLayout.WEST,this, 5, SpringLayout.EAST, gamma_spin);
+			
+			bg_spin_layout.putConstraint(SpringLayout.SOUTH, this, 5, SpringLayout.NORTH, beta_label);
+			
+			
+			
 		}
 		
 		

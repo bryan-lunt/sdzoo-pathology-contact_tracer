@@ -49,6 +49,9 @@ public class TimelineHandler extends CSVInput {
 	
 	public void handle_strarray(String[] nextLine) throws Exception{
         	
+		//FORMAT: animal_native_id, move_in_date (as YYYY-MM-DD), move_out_date (as YYYY-MM-DD)
+		
+		
     	EntryStruct one_file_entry = new EntryStruct(nextLine);
     	
     	//Figure out if the Animal and/or Enclosure already exist in the database.

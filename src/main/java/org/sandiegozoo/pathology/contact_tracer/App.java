@@ -28,21 +28,33 @@ public class App implements Callable<Object>
     		show_gui = true;
     	}
     	
-    	//DEBUG
+    	//Command line options.
     	Options program_options = new Options();
-    	program_options.addOption("t",true, "Timeline file");
-    	program_options.addOption("i",true, "Infection file");
-    	program_options.addOption("c",true, "Environmental contamination file");
+    	program_options.addOption("t", true, "Timeline file");
+    	program_options.addOption("i", true, "Infection file");
+    	program_options.addOption("s", true, "Simple Diagnosis file (you must also use BETA and GAMMA when using this input.");
+    	program_options.addOption("b", "beta", true, "The number of days before DoDx to assume as the onset date. 0,1,2, etc. ");
+    	program_options.addOption("g", "gamma", true, "The number of days the contagion will linger in an enclosure after the sick animal leaves. 0,1,2, etc. ");
+    	program_options.addOption("c", true, "Environmental contamination file");
     	
-    	program_options.addOption("o",true, "Output Exposures Filename");
-    	program_options.addOption("d",true, "Save Contaminations");
+    	program_options.addOption("o", true, "Output Exposures Filename");
+    	program_options.addOption("d", true, "Save Contaminations");
+    	
+    	program_options.addOption("h", "help", false, "Print this help message.");
     	
     	CommandLineParser parser = new PosixParser();
     	CommandLine cmd = parser.parse( program_options, args);
     
     	
+    	// automatically generate the help statement
+    	if(cmd.hasOption("h")){
+    		HelpFormatter formatter = new HelpFormatter();
+    		formatter.printHelp("java -jar this-jar-file.jar", program_options);
+    		System.exit(64);
+    	}
     	
     	if(show_gui){
+    		System.err.println("Starting GUI, use the flag --help to get a description of command-line usage.");
     		//Display the GUI to setup and run the program
     		CTMainFrame myMainFrame = new CTMainFrame();
         	myMainFrame.setVisible(true);
@@ -60,6 +72,30 @@ public class App implements Callable<Object>
 	       
 	       if(cmd.hasOption("i")){
 	    	  MAIN.input_handlers.add(new InfectionHandler(new File(cmd.getOptionValue( "i"))));
+	       }
+	       
+	       if(cmd.hasOption("s")){
+	    	   if(!(cmd.hasOption("b") && cmd.hasOption("g"))){
+	    		   System.err.println("A simple input was given, but no values specified for BETA or GAMMA (see help).");
+	    		   System.exit(64);
+	    	   }
+	    	   
+	    	   int cmdl_beta = 0;
+	    	   int cmdl_gamma = 0;
+	    	   try{
+	    		   cmdl_beta = Integer.parseInt(cmd.getOptionValue("b"));
+	    		   cmdl_gamma = Integer.parseInt(cmd.getOptionValue("g"));
+	    		   if(cmdl_beta < 0 || cmdl_gamma < 0){
+	    			   throw new Exception("Negative values");
+	    		   }
+	    	   }catch(Exception e){
+	    		   System.err.println("Invalid integer format for BETA or GAMMA, valid values are \"0\", \"1\", \"2\", etc.");
+	    		   System.exit(64);
+	    	   }
+	    	   
+	    	   //OK, things should work.
+	    	   MAIN.input_handlers.add(new BasicDiagnosisHandler(new File(cmd.getOptionValue("s")), cmdl_beta, cmdl_gamma));
+	    	   
 	       }
 	       
 	       if(cmd.hasOption("c")){
