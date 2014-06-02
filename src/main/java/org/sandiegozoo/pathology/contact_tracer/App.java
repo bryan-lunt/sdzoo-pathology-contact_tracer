@@ -123,12 +123,7 @@ public class App implements Callable<Object>
     
     public File exposure_output_file = null;
     public File contamination_output_file = null;
-    /*
-    public File timeline_file = null;
-    public File infection_file = null;
-    public File contamination_file = null;
-    public File limit_enclosures_file = null;
-    */
+
     public List<CTIOHandler> input_handlers = new ArrayList<CTIOHandler>();
     
     public void addInputHandler(CTIOHandler input){
