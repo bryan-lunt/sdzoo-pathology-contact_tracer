@@ -22,10 +22,11 @@ public class App implements Callable<Object>
 {
     public static void main( String[] args ) throws Exception
     {
-    	CTMainFrame myMainFrame = new CTMainFrame();
-    	myMainFrame.setVisible(true);
+    	boolean show_gui = false;
     	
-    	Thread.sleep(1000000000);
+    	if(args.length == 0){
+    		show_gui = true;
+    	}
     	
     	//DEBUG
     	Options program_options = new Options();
@@ -34,29 +35,53 @@ public class App implements Callable<Object>
     	program_options.addOption("c",true, "Environmental contamination file");
     	
     	program_options.addOption("o",true, "Output Exposures Filename");
+    	program_options.addOption("d",true, "Save Contaminations");
     	
     	CommandLineParser parser = new PosixParser();
     	CommandLine cmd = parser.parse( program_options, args);
     
     	
     	
-    	App MAIN = new App();
-   	 
-       if(cmd.hasOption("t")){
-	       MAIN.input_handlers.add(new TimelineHandler(new File(cmd.getOptionValue( "t" ))));
-       }
-       
-       
-       if(cmd.hasOption("i")){
-    	  MAIN.input_handlers.add(new InfectionHandler(new File(cmd.getOptionValue( "i"))));
-       }
-       
-       if(cmd.hasOption("o")){
-    	   MAIN.input_handlers.add(new ContaminationHandler(new File(cmd.getOptionValue("c"))));
-       } 
-       //Main business logic!
-       MAIN.call();
-    	
+    	if(show_gui){
+    		//Display the GUI to setup and run the program
+    		CTMainFrame myMainFrame = new CTMainFrame();
+        	myMainFrame.setVisible(true);
+        	
+	    }else{
+	    	//Use command-line options to run the program
+	    	
+	    	App MAIN = new App();
+	   	 
+	    	
+	    	//Setup INPUTS
+	       if(cmd.hasOption("t")){
+		       MAIN.input_handlers.add(new TimelineHandler(new File(cmd.getOptionValue( "t" ))));
+	       }
+	       
+	       if(cmd.hasOption("i")){
+	    	  MAIN.input_handlers.add(new InfectionHandler(new File(cmd.getOptionValue( "i"))));
+	       }
+	       
+	       if(cmd.hasOption("c")){
+	    	   MAIN.input_handlers.add(new ContaminationHandler(new File(cmd.getOptionValue("c"))));
+	       } 
+	       
+	       
+	       
+	       //setup OUTPUTS
+	       
+	       if(cmd.hasOption("o")){
+	    	   MAIN.exposure_output_file = new File(cmd.getOptionValue("o"));
+	       }//Otherwise goes to STDOUT
+	       
+	       if(cmd.hasOption("d")){
+	    	   MAIN.contamination_output_file = new File(cmd.getOptionValue("d"));
+	       }
+	       
+	       
+	       //Main business logic!
+	       MAIN.call();
+	    }
 
     }
     
@@ -97,11 +122,6 @@ public class App implements Callable<Object>
         
         System.err.println("FINISHED CONTACT TRACER");
         
-        /*
-         * Filtering
-         */
-        
-        
         
         /*
          * OUTPUT
@@ -119,6 +139,11 @@ public class App implements Callable<Object>
        
         //CONTAMINATIONS (if requested)
         
+       if(this.contamination_output_file != null){
+    	   ContaminationWriter my_c_writer = new ContaminationWriter(this.contamination_output_file);
+    	   my_c_writer.setSessionFactory(sessionFactory);
+    	   my_c_writer.call();
+       }
         
         return null;
     }

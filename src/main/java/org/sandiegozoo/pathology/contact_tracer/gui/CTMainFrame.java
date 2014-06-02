@@ -174,7 +174,7 @@ public class CTMainFrame extends JFrame {
 		
 		advancedPanel.addNamed("timeline_file", new FileSelectorPanel("Timeline Input File"));
 		advancedPanel.addNamed("infection_file", new FileSelectorPanel("Infection Input File"));
-		advancedPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
+		//advancedPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
 		advancedPanel.addNamed("contamination_file", new FileSelectorPanel("Other Enclosure Contaminations (ex: Environmental) File (Optional)"));
 		
 		advancedPanel.add(new JSeparator(JSeparator.HORIZONTAL));
@@ -206,7 +206,7 @@ public class CTMainFrame extends JFrame {
 		basicPanel.addNamed("timeline_file", new FileSelectorPanel("Timeline Input File"));
 		basicPanel.addNamed("diagnosis_file", new FileSelectorPanel("Diagnosis Input File (infection periods guessed.)"));
 		basicPanel.addNamed("default_values", new BetaGammaSpinners());
-		basicPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
+		//basicPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		

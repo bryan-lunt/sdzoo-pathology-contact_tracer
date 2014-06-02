@@ -11,17 +11,20 @@ import org.sandiegozoo.pathology.database.domain.Exposure;
 
 public class ExposureWriter extends CSVOutput{
 
+	static DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+	public static final String QUERY = "from Exposure";
+	
 	public ExposureWriter(File outputFile) {
 		super(outputFile);
-		this.setQuery("from Exposure");
+		this.setQuery(QUERY);
 	}
 	
 	public ExposureWriter(Writer outWriter){
 		super(outWriter);
-		this.setQuery("from Exposure");
+		this.setQuery(QUERY);
 	}
 
-	static DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+	
 
 	@Override
 	public String[] handle_object(Object in) throws Exception {
