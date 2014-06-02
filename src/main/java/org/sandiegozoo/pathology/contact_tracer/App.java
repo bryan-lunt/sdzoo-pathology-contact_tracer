@@ -62,16 +62,16 @@ public class App implements Callable<Object>
 	    }else{
 	    	//Use command-line options to run the program
 	    	
-	    	App MAIN = new App();
+	    	App main_app = new App();
 	   	 
 	    	
 	    	//Setup INPUTS
 	       if(cmd.hasOption("t")){
-		       MAIN.input_handlers.add(new TimelineHandler(new File(cmd.getOptionValue( "t" ))));
+		       main_app.addInputHandler(new TimelineHandler(new File(cmd.getOptionValue( "t" ))));
 	       }
 	       
 	       if(cmd.hasOption("i")){
-	    	  MAIN.input_handlers.add(new InfectionHandler(new File(cmd.getOptionValue( "i"))));
+	    	  main_app.addInputHandler(new InfectionHandler(new File(cmd.getOptionValue( "i"))));
 	       }
 	       
 	       if(cmd.hasOption("s")){
@@ -94,12 +94,12 @@ public class App implements Callable<Object>
 	    	   }
 	    	   
 	    	   //OK, things should work.
-	    	   MAIN.input_handlers.add(new BasicDiagnosisHandler(new File(cmd.getOptionValue("s")), cmdl_beta, cmdl_gamma));
+	    	   main_app.addInputHandler(new BasicDiagnosisHandler(new File(cmd.getOptionValue("s")), cmdl_beta, cmdl_gamma));
 	    	   
 	       }
 	       
 	       if(cmd.hasOption("c")){
-	    	   MAIN.input_handlers.add(new ContaminationHandler(new File(cmd.getOptionValue("c"))));
+	    	   main_app.addInputHandler(new ContaminationHandler(new File(cmd.getOptionValue("c"))));
 	       } 
 	       
 	       
@@ -107,16 +107,16 @@ public class App implements Callable<Object>
 	       //setup OUTPUTS
 	       
 	       if(cmd.hasOption("o")){
-	    	   MAIN.exposure_output_file = new File(cmd.getOptionValue("o"));
+	    	   main_app.exposure_output_file = new File(cmd.getOptionValue("o"));
 	       }//Otherwise goes to STDOUT
 	       
 	       if(cmd.hasOption("d")){
-	    	   MAIN.contamination_output_file = new File(cmd.getOptionValue("d"));
+	    	   main_app.contamination_output_file = new File(cmd.getOptionValue("d"));
 	       }
 	       
 	       
 	       //Main business logic!
-	       MAIN.call();
+	       main_app.call();
 	    }
 
     }
@@ -130,6 +130,10 @@ public class App implements Callable<Object>
     public File limit_enclosures_file = null;
     */
     public List<CTIOHandler> input_handlers = new ArrayList<CTIOHandler>();
+    
+    public void addInputHandler(CTIOHandler input){
+    	this.input_handlers.add(input);
+    }
     
     private SessionFactory sessionFactory;
     
