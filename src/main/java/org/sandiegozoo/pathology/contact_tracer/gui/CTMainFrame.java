@@ -65,6 +65,7 @@ public class CTMainFrame extends JFrame {
 			
 			myApp.exposure_output_file = ((FileSelectorPanel)subject.getNamed("output_file")).getSelectedFile();
 			
+			myApp.contamination_output_file = ((FileSelectorPanel)subject.getNamed("contamination_output_file")).getSelectedFile();
 			
 			File timeline_file = ((FileSelectorPanel)subject.getNamed("timeline_file")).getSelectedFile();
 			if(timeline_file != null){
@@ -104,6 +105,8 @@ public class CTMainFrame extends JFrame {
 			createApp();
 			
 			myApp.exposure_output_file = ((FileSelectorPanel)subject.getNamed("output_file")).getSelectedFile();
+			
+			myApp.contamination_output_file = ((FileSelectorPanel)subject.getNamed("contamination_output_file")).getSelectedFile();
 			
 			
 			File timeline_file = ((FileSelectorPanel)subject.getNamed("timeline_file")).getSelectedFile();
@@ -189,6 +192,11 @@ public class CTMainFrame extends JFrame {
 		output_file_panel.setMode(FileSelectorPanel.SAVE_FILE);
 		advancedPanel.addNamed("output_file", output_file_panel);
 		
+		FileSelectorPanel output_contamination_panel = new FileSelectorPanel("Contaminations Output File (will include inputed contaminations.)");
+		output_contamination_panel.setMode(FileSelectorPanel.SAVE_FILE);
+		advancedPanel.addNamed("contamination_output_file",output_contamination_panel);
+		
+		
 		advancedPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		advancedPanel.add(new JLabel("Inputs:"));
 		
@@ -215,10 +223,16 @@ public class CTMainFrame extends JFrame {
 	private void createBasicPanel(){
 		basicPanel = new NamedComponentPanel();
 		basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
+		
 		basicPanel.add(new JLabel("Outputs:"));
 		FileSelectorPanel output_file_panel = new FileSelectorPanel("Exposures Output File");
 		output_file_panel.setMode(FileSelectorPanel.SAVE_FILE);
 		basicPanel.addNamed("output_file", output_file_panel);
+		
+		FileSelectorPanel output_contamination_panel = new FileSelectorPanel("Contaminations Output File (will include inputed contaminations.)");
+		output_contamination_panel.setMode(FileSelectorPanel.SAVE_FILE);
+		basicPanel.addNamed("contamination_output_file",output_contamination_panel);
+		
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		basicPanel.add(new JLabel("Inputs:"));
