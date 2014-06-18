@@ -70,11 +70,17 @@
 
   
   <!-- Hibernate to an in-memory h2 database -->
-  <dependency>
+  <!--  <dependency>
 	<groupId>com.h2database</groupId>
 	<artifactId>h2</artifactId>
 	<version>1.4.178</version>
 </dependency>
+-->
+	<dependency>
+		<groupId>org.hsqldb</groupId>
+		<artifactId>hsqldb</artifactId>
+		<version>2.2.8</version>
+	</dependency>
 
 	<dependency>
 			<groupId>net.sf.opencsv</groupId>
