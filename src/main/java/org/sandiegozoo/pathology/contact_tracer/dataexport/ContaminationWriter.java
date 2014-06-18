@@ -42,7 +42,7 @@ public class ContaminationWriter extends CSVOutput{
 		Animal source_animal = (one_con.source_inf_id == null ? null : one_con.source_inf_id.animal_id);
 		if(source_animal != null){
 			direct_or_environmental = "1";
-			source_animal_native_id = Long.toString(source_animal.native_ID);
+			source_animal_native_id = source_animal.native_ID;
 			
 		}
 		

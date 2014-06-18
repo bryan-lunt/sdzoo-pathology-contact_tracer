@@ -12,7 +12,7 @@ public class PathDBUtil {
 	Query animal_from_nid;
 	Query enc_from_name;
 	
-	Map<Long, Animal> animals_by_id = new HashMap<Long,Animal>();
+	Map<String, Animal> animals_by_id = new HashMap<String,Animal>();
 	Map<String, Enclosure> encs_by_id = new HashMap<String,Enclosure>();
 	
 	public PathDBUtil(Session in){
@@ -21,12 +21,12 @@ public class PathDBUtil {
 		enc_from_name = session.createQuery( "from Enclosure where name = :nname");
 	}
 	
-	public Animal completeOrCreateAnimal(long native_ID){
-		Animal retval = animals_by_id.get(new Long(native_ID));
+	public Animal completeOrCreateAnimal(String native_ID){
+		Animal retval = animals_by_id.get(native_ID);
 		if(retval != null)
 			return retval;
 		
-		animal_from_nid.setLong("nid", native_ID);
+		animal_from_nid.setString("nid", native_ID);
 		retval = (Animal)animal_from_nid.uniqueResult();
 		
 		if(retval == null){
@@ -35,7 +35,7 @@ public class PathDBUtil {
 			session.persist(retval);
 		}
 		
-		animals_by_id.put(new Long(native_ID), retval);
+		animals_by_id.put(native_ID, retval);
 		
 		return retval;
 	}

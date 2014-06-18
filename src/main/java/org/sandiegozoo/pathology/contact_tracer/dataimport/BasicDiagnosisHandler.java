@@ -2,6 +2,7 @@ package org.sandiegozoo.pathology.contact_tracer.dataimport;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.sandiegozoo.pathology.contact_tracer.datautil.DateHandler;
 import org.sandiegozoo.pathology.database.PathDBUtil;
 import org.sandiegozoo.pathology.database.domain.*;
 
@@ -27,7 +28,7 @@ public class BasicDiagnosisHandler extends CSVInput {
 		
 	}
 
-	static DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+	public DateHandler diagnosis_date_handler = new DateHandler();
 	
 
 	
@@ -35,10 +36,9 @@ public class BasicDiagnosisHandler extends CSVInput {
         
 		//FORMAT: Animal_ID, DoDx, (name of disease?)
 		
-		long animal_native_id = Long.parseLong( nextLine[0].trim() );
+		String animal_native_id = nextLine[0].trim();
 		
-		Calendar diagnosis_date = new GregorianCalendar();
-		diagnosis_date.setTime(date_format.parse(nextLine[1]));
+		Calendar diagnosis_date = diagnosis_date_handler.parse(nextLine[1]);
 		
 		Calendar onset_date = (Calendar)diagnosis_date.clone();
 		onset_date.add(Calendar.DATE, -1 * days_before);

@@ -28,13 +28,13 @@ public class TimelineHandler extends CSVInput {
 	
 	private class EntryStruct{
 		
-		public long animal_native_id;
+		public String animal_native_id;
 		public Calendar move_in;
 		public Calendar move_out;
 		public String enclosure_name;
 		
 		EntryStruct(String[] in) throws Exception{
-			animal_native_id = Long.parseLong(in[0].trim());
+			animal_native_id = in[0].trim();
 			
 			enclosure_name = in[1].trim();
 			
@@ -50,7 +50,6 @@ public class TimelineHandler extends CSVInput {
 	
 	
 	public void handle_strarray(String[] nextLine) throws Exception{
-        	
 		//FORMAT: animal_native_id, move_in_date (as YYYY-MM-DD), move_out_date (as YYYY-MM-DD), enclosure_name
 		
 		
@@ -74,9 +73,6 @@ public class TimelineHandler extends CSVInput {
     	//session.save(theEnclosure);
     	session.persist(oneHousing);
     	
-    	//Is this cleaver or stupid?
-    	//session.getTransaction().commit();
-    	//session.beginTransaction();
 	}
 	
 }

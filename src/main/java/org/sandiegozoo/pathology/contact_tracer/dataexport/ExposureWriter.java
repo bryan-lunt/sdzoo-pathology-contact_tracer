@@ -32,8 +32,8 @@ public class ExposureWriter extends CSVOutput{
 		
 		Exposure one_exp = (Exposure)in;
 		
-		String exposed_native_id = Long.toString(one_exp.animal_id.native_ID);
-		String source_animal_native_id = (one_exp.source.source_inf_id == null ? "" : Long.toString(one_exp.source.source_inf_id.animal_id.native_ID));
+		String exposed_native_id = one_exp.animal_id.native_ID;
+		String source_animal_native_id = (one_exp.source.source_inf_id == null ? "" : one_exp.source.source_inf_id.animal_id.native_ID);
 		String duration = "" + one_exp.getDurationDays();
 		String start_date = date_format.format(one_exp.start_date.getTime());
 		String end_date = date_format.format(one_exp.end_date.getTime());

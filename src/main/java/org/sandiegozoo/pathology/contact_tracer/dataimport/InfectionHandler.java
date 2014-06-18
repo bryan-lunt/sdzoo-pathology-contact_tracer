@@ -2,6 +2,7 @@ package org.sandiegozoo.pathology.contact_tracer.dataimport;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.sandiegozoo.pathology.contact_tracer.datautil.DateHandler;
 import org.sandiegozoo.pathology.database.PathDBUtil;
 import org.sandiegozoo.pathology.database.domain.*;
 
@@ -22,7 +23,9 @@ public class InfectionHandler extends CSVInput {
 		// TODO Auto-generated constructor stub
 	}
 
-	static DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
+	public DateHandler onset_date_handler = new DateHandler();
+	public DateHandler diagnosis_date_handler = new DateHandler();
+	public DateHandler cure_date_handler = new DateHandler();
 	
 
 	
@@ -30,7 +33,7 @@ public class InfectionHandler extends CSVInput {
         
 		//FORMAT: Animal_Native_ID, linger_days, onset_date, (cure_date <default to never/today>, (diagnosis_date <default to today>, (name <no default>, ( notes <no default>))))
 		
-		long animal_native_id = Long.parseLong(nextLine[0].trim());
+		String animal_native_id = nextLine[0].trim();
 		
 		int linger_days = 0;
 
@@ -40,13 +43,12 @@ public class InfectionHandler extends CSVInput {
 		}
 
 		
-		Calendar onset_date = new GregorianCalendar();
-		onset_date.setTime(date_format.parse(nextLine[2]));
+		Calendar onset_date = onset_date_handler.parse(nextLine[2]);
 		
 		Calendar cure_date = new GregorianCalendar();//TODO: Should it really be today?
 		if(nextLine.length >= 4){
 			try{
-				cure_date.setTime(date_format.parse(nextLine[3]));
+				cure_date = cure_date_handler.parse(nextLine[3]);
 			}catch(Exception e){}
 		}
 		
@@ -55,8 +57,7 @@ public class InfectionHandler extends CSVInput {
 			try{
 				//Convoluted, but ensures diagnosis_date remains null unless everything works.
 				//I could null it out in the catch clause though. (But that then risks getting missed/separated?)
-				diagnosis_date = new GregorianCalendar();
-				diagnosis_date.setTime(date_format.parse(nextLine[4]));
+				diagnosis_date = diagnosis_date_handler.parse(nextLine[4]);
 			}catch(Exception e){diagnosis_date = null;}
 		}
 		

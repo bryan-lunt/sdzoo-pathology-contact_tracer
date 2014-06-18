@@ -19,7 +19,7 @@ public class Animal {
 	//@Id
 	@Index( name = "animal_native_id_index" )
 	@Column( name = "native_id", unique = true, nullable=false )
-	public long native_ID = 0;
+	public String native_ID;
 	
 	
 	public long getId() {
@@ -31,7 +31,7 @@ public class Animal {
 	
 	public Animal(){}
 	
-	public Animal(long inID){
+	public Animal(String inID){
 		this.native_ID = inID;
 	}
 	

@@ -40,14 +40,14 @@ public class ContactTracer {
 	public void process_contaminations(){process_contaminations(true);}
 	public void process_contaminations(boolean truncate){
 		Session session = factory.openSession();
-		Transaction myT = session.beginTransaction();
+		//Transaction myT = session.beginTransaction();
 		
 		//Start with a clean slate?
 		if(truncate){
 			Query myQ = session.createQuery("delete from Contamination");
 			myQ.executeUpdate();
-			session.getTransaction().commit();
-			session.beginTransaction();
+			//session.getTransaction().commit();
+			//session.beginTransaction();
 		}
 		
 		Query findInfections = session.createQuery("from Infection");
@@ -85,7 +85,7 @@ public class ContactTracer {
 		}
 		
 		
-		session.getTransaction().commit();
+		//session.getTransaction().commit();
 		session.close();
 		
 	}
@@ -94,14 +94,14 @@ public class ContactTracer {
 	public void process_exposures(){process_exposures(true);}
 	public void process_exposures(boolean truncate){
 		Session session = factory.openSession();
-		session.beginTransaction();
+		//session.beginTransaction();
 		
 		//Start with a clean slate?
 		if(truncate){
 			Query myQ = session.createQuery("delete from Exposure");
 			myQ.executeUpdate();
-			session.getTransaction().commit();
-			session.beginTransaction();
+			//session.getTransaction().commit();
+			//session.beginTransaction();
 		}
 		
 		Query find_contaminations = session.createQuery("from Contamination");
@@ -144,7 +144,7 @@ public class ContactTracer {
         	
         }
 		
-		session.getTransaction().commit();
+		//session.getTransaction().commit();
 		session.close();
 	}
 	

@@ -2,6 +2,7 @@ package org.sandiegozoo.pathology.contact_tracer.dataimport;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.sandiegozoo.pathology.contact_tracer.datautil.DateHandler;
 import org.sandiegozoo.pathology.database.*;
 import org.sandiegozoo.pathology.database.domain.*;
 
@@ -22,8 +23,8 @@ public class ContaminationHandler extends CSVInput {
 		// TODO Auto-generated constructor stub
 	}
 
-	static DateFormat date_format = new SimpleDateFormat("yyyy-MM-dd");
-	
+	public DateHandler start_date_handler = new DateHandler();
+	public DateHandler end_date_handler = new DateHandler();
 
 	
 	public void handle_strarray(String[] nextLine) throws Exception{
@@ -35,14 +36,12 @@ public class ContaminationHandler extends CSVInput {
 		
 		
 		String enclosure_id = nextLine[0];
-		Calendar start_date = new GregorianCalendar();
-		start_date.setTime(date_format.parse(nextLine[1]));
+		Calendar start_date = start_date_handler.parse(nextLine[1]);
 		
 		Calendar end_date = null;
 		if(nextLine.length >= 3){
 			try{
-				end_date = new GregorianCalendar();
-				end_date.setTime(date_format.parse(nextLine[2]));
+				end_date = end_date_handler.parse(nextLine[2]);
 			}catch(Exception e){
 				end_date = new GregorianCalendar();//TODO: Should I make it tomorrow?
 			}
