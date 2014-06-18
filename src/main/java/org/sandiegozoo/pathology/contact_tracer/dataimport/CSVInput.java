@@ -4,6 +4,7 @@ import java.io.*;
 
 import org.hibernate.*;
 import org.sandiegozoo.pathology.contact_tracer.CTIOHandler;
+import org.sandiegozoo.pathology.database.PathDBUtil;
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -11,6 +12,8 @@ public abstract class CSVInput extends CTIOHandler {
 
 	CSVReader myreader;
 	Session session;
+	
+	PathDBUtil path_db_util;
 	
 	public CSVInput(File inputfile){
 		try {
@@ -32,6 +35,8 @@ public abstract class CSVInput extends CTIOHandler {
 	public void begin(){
 		session = factory.openSession();
 		session.beginTransaction();
+		
+		path_db_util = new PathDBUtil(session);
 	}
 	
 	public void done(){

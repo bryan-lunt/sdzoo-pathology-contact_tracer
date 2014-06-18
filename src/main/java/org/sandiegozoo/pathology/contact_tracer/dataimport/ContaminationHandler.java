@@ -53,9 +53,7 @@ public class ContaminationHandler extends CSVInput {
 			is_direct = boolean_helper(nextLine[3]);
 		}
 		
-    	Enclosure theEnclosure = new Enclosure();
-    	theEnclosure.name = enclosure_id;
-    	theEnclosure = PathDBUtil.completeOrCreateEnclosure(theEnclosure, session);
+    	Enclosure theEnclosure = path_db_util.completeOrCreateEnclosure(enclosure_id);
     	
     	Contamination theContamination = new Contamination();
     	theContamination.enc_id = theEnclosure;
@@ -63,7 +61,8 @@ public class ContaminationHandler extends CSVInput {
     	theContamination.end_date = end_date;
     	theContamination.is_direct = is_direct;
     	
-    	session.save(theEnclosure);
+    	//Already saved once
+    	//session.save(theEnclosure);
     	session.save(theContamination);
 		
 	}

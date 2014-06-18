@@ -144,8 +144,12 @@ public class App implements Callable<Object>
     public Object call() throws Exception{
     	
     	for(CTIOHandler one_input : input_handlers){
+    		System.err.print("Doing one input handler...");
+    		
     		one_input.setSessionFactory(sessionFactory);
     		one_input.call();
+    		
+    		System.err.println("DONE.");
     	}
 	    
     	

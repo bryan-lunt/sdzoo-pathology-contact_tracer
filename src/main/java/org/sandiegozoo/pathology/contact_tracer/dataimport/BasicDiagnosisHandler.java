@@ -35,7 +35,7 @@ public class BasicDiagnosisHandler extends CSVInput {
         
 		//FORMAT: Animal_ID, DoDx, (name of disease?)
 		
-		String animal_native_id = nextLine[0].trim();
+		long animal_native_id = Long.parseLong( nextLine[0].trim() );
 		
 		Calendar diagnosis_date = new GregorianCalendar();
 		diagnosis_date.setTime(date_format.parse(nextLine[1]));
@@ -46,9 +46,7 @@ public class BasicDiagnosisHandler extends CSVInput {
 		Calendar cure_date = new GregorianCalendar();//TODO: Should it really be today?
 		
     	//Figure out if the Animal already exists in the database.
-    	Animal theAnimal = new Animal();
-    	theAnimal.native_ID = animal_native_id;
-    	theAnimal = PathDBUtil.completeOrCreateAnimal(theAnimal, session);
+    	Animal theAnimal = path_db_util.completeOrCreateAnimal(animal_native_id);
     	
 		Infection theInfection = new Infection();
 		theInfection.days_linger = linger_days;
@@ -60,8 +58,8 @@ public class BasicDiagnosisHandler extends CSVInput {
 		theInfection.animal_id = theAnimal;
     	
 		
-		
-    	session.save(theAnimal);
+		//Already saved once
+    	//session.save(theAnimal);
     	session.save(theInfection);
  
 	}

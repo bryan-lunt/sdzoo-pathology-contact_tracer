@@ -14,11 +14,11 @@ public class Housing {
 	@GenericGenerator(name="increment", strategy = "increment")
 	private long id;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "enc_id")
 	public Enclosure enc_id;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "animal_id")
 	public Animal animal_id;
 	

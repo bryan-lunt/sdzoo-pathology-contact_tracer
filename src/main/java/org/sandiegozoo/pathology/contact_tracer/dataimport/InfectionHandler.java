@@ -30,7 +30,7 @@ public class InfectionHandler extends CSVInput {
         
 		//FORMAT: Animal_Native_ID, linger_days, onset_date, (cure_date <default to never/today>, (diagnosis_date <default to today>, (name <no default>, ( notes <no default>))))
 		
-		String animal_native_id = nextLine[0].trim();
+		long animal_native_id = Long.parseLong(nextLine[0].trim());
 		
 		int linger_days = 0;
 
@@ -73,9 +73,7 @@ public class InfectionHandler extends CSVInput {
 		
 		
     	//Figure out if the Animal already exists in the database.
-    	Animal theAnimal = new Animal();
-    	theAnimal.native_ID = animal_native_id;
-    	theAnimal = PathDBUtil.completeOrCreateAnimal(theAnimal, session);
+    	Animal theAnimal = path_db_util.completeOrCreateAnimal(animal_native_id);
     	
 		Infection theInfection = new Infection();
 		theInfection.days_linger = linger_days;
@@ -87,8 +85,8 @@ public class InfectionHandler extends CSVInput {
 		theInfection.animal_id = theAnimal;
     	
 		
-		
-    	session.save(theAnimal);
+		//Already saved once
+    	//session.save(theAnimal);
     	session.save(theInfection);
  
 	}
