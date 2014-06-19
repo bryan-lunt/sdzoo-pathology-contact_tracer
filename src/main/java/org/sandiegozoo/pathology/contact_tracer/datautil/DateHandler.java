@@ -13,7 +13,7 @@ public class DateHandler {
 	
 	static {
 		
-		DateFormat one_format;
+		SimpleDateFormat one_format;
 		
 		one_format = new SimpleDateFormat("yyyy-MM-dd");
 		master_date_formats.add(one_format);

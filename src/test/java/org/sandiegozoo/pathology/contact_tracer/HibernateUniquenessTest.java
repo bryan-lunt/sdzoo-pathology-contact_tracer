@@ -13,15 +13,13 @@ import org.sandiegozoo.pathology.database.domain.Infection;
 
 import junit.framework.TestCase;
 
-public class HibernateUniquenessTest extends TestCase {
+public class HibernateUniquenessTest extends MyBase {
 
 	SessionFactory sessionFactory;
 	
 	public void setUp(){
 	     // A SessionFactory is set up once for an application
-        sessionFactory = new Configuration()
-                .configure() // configures settings from hibernate.cfg.xml
-                .buildSessionFactory();
+        this.setupFactory();
 	}
 	
 	public void testBasic(){

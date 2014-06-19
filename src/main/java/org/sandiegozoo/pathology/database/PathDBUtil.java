@@ -14,6 +14,10 @@ public class PathDBUtil {
 	
 	Map<String, Animal> animals_by_id = new HashMap<String,Animal>();
 	Map<String, Enclosure> encs_by_id = new HashMap<String,Enclosure>();
+	public void clear(){
+		animals_by_id.clear();
+		encs_by_id.clear();
+	}
 	
 	public PathDBUtil(Session in){
 		session = in;

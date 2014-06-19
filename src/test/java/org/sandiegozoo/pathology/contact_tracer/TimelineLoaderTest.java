@@ -11,16 +11,13 @@ import org.sandiegozoo.pathology.database.domain.*;
 
 import junit.framework.TestCase;
 
-public class TimelineLoaderTest extends TestCase {
+public class TimelineLoaderTest extends MyBase {
 
-	SessionFactory sessionFactory;
 	CTIOHandler timeline_reader;
 	
 	public void setUp(){
 	     // A SessionFactory is set up once for an application
-        sessionFactory = new Configuration()
-                .configure() // configures settings from hibernate.cfg.xml
-                .buildSessionFactory();
+        this.setupFactory();
         
         Reader theReader = new InputStreamReader(getClass().getClassLoader().getResourceAsStream("basic_timeline.txt"));
         

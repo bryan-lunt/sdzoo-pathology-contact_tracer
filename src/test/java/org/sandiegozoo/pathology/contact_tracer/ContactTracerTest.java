@@ -12,9 +12,8 @@ import org.sandiegozoo.pathology.database.domain.*;
 
 import junit.framework.TestCase;
 
-public class ContactTracerTest extends TestCase {
+public class ContactTracerTest extends MyBase {
 
-	SessionFactory sessionFactory;
 	
 	CTIOHandler timeline_reader;
 	CTIOHandler infection_reader;
@@ -22,9 +21,7 @@ public class ContactTracerTest extends TestCase {
 	public void setUp(){
 		
 	     // A SessionFactory is set up once for an application
-        sessionFactory = new Configuration()
-                .configure() // configures settings from hibernate.cfg.xml
-                .buildSessionFactory();
+       this.setupFactory();
        
        timeline_reader = new TimelineHandler(new File(getClass().getClassLoader().getResource("basic_timeline.txt").getFile()));
        timeline_reader.setSessionFactory(sessionFactory);

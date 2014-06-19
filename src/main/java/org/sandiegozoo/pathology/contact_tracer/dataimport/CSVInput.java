@@ -34,34 +34,45 @@ public abstract class CSVInput extends CTIOHandler {
 	
 	public void begin(){
 		session = factory.openSession();
-		
+		session.beginTransaction();
 		path_db_util = new PathDBUtil(session);
 	}
 	
 	public void done(){
+		session.getTransaction().commit();
         session.close();
         try{
         	myreader.close();
         }catch(Exception e){}
 	}
 	
-	static int NUM_PER_TRANSACTION = 10;
-	private int num_handled = 0;
+	static int NUM_PER_BATCH = 100;
+	private int num_handled_batch = 0;
+	static int NUM_PER_TRANSACTION = 10000;
+	private int num_handled_transaction = 0;
 	
 	public void handle() throws Exception {
 		
         try{
 	        String [] nextLine;
 	        while ((nextLine = myreader.readNext()) != null) {
-	        	if(num_handled == 0)
-	    			session.beginTransaction();
-	        	
-	        	this.handle_strarray(nextLine);
-	        	
-	            num_handled = (num_handled+1) % NUM_PER_TRANSACTION;
-	            if(num_handled == 0)
-	            	session.getTransaction().commit();
 	        		
+		        	this.handle_strarray(nextLine);
+		        	
+		            num_handled_batch = (num_handled_batch+1) % NUM_PER_BATCH;
+		            if(num_handled_batch == 0){
+		            	session.flush();
+		            	session.clear();
+		            	path_db_util.clear();
+		            }
+		        	
+		            num_handled_transaction = (num_handled_transaction+1) % NUM_PER_TRANSACTION;
+		            if(num_handled_transaction == 0){
+		            	session.getTransaction().commit();
+		            	session.beginTransaction();
+		            }
+	           
+	            
 	        }
         }finally{
         }

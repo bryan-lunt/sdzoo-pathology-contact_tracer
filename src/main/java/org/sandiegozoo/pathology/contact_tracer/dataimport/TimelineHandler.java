@@ -58,6 +58,7 @@ public class TimelineHandler extends CSVInput {
     	//Figure out if the Animal and/or Enclosure already exist in the database.
     	Animal theAnimal = path_db_util.completeOrCreateAnimal(one_file_entry.animal_native_id);
     	
+    	
     	//Figure out if the Enclosure already exists in the database.
     	Enclosure theEnclosure = path_db_util.completeOrCreateEnclosure(one_file_entry.enclosure_name);
     	
@@ -72,6 +73,8 @@ public class TimelineHandler extends CSVInput {
     	//session.save(theAnimal);
     	//session.save(theEnclosure);
     	session.persist(oneHousing);
+    	
+	
     	
 	}
 	

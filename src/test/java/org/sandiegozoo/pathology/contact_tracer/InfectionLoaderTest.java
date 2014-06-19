@@ -3,6 +3,7 @@ package org.sandiegozoo.pathology.contact_tracer;
 import java.io.*;
 import java.util.List;
 
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -11,23 +12,19 @@ import org.sandiegozoo.pathology.database.domain.*;
 
 import junit.framework.TestCase;
 
-public class InfectionLoaderTest extends TestCase {
+public class InfectionLoaderTest extends MyBase {
 
-	SessionFactory sessionFactory;
 	CTIOHandler infection_reader;
 	
 	public void setUp(){
-	     // A SessionFactory is set up once for an application
-        sessionFactory = new Configuration()
-                .configure() // configures settings from hibernate.cfg.xml
-                .buildSessionFactory();
+	    this.setupFactory();
         
         infection_reader = new InfectionHandler(new File(getClass().getClassLoader().getResource("basic_infections.txt").getFile()));
         infection_reader.setSessionFactory(sessionFactory);
        
 	}
 	
-	public void testBasic(){
+	public void testBasic() throws Exception{
         
         System.out.println("TESTING INFECTION LOADER");
         

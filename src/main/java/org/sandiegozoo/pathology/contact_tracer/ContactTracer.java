@@ -40,7 +40,7 @@ public class ContactTracer {
 	public void process_contaminations(){process_contaminations(true);}
 	public void process_contaminations(boolean truncate){
 		Session session = factory.openSession();
-		//Transaction myT = session.beginTransaction();
+		Transaction myT = session.beginTransaction();
 		
 		//Start with a clean slate?
 		if(truncate){
@@ -85,7 +85,7 @@ public class ContactTracer {
 		}
 		
 		
-		//session.getTransaction().commit();
+		session.getTransaction().commit();
 		session.close();
 		
 	}
@@ -94,7 +94,7 @@ public class ContactTracer {
 	public void process_exposures(){process_exposures(true);}
 	public void process_exposures(boolean truncate){
 		Session session = factory.openSession();
-		//session.beginTransaction();
+		session.beginTransaction();
 		
 		//Start with a clean slate?
 		if(truncate){
@@ -144,7 +144,7 @@ public class ContactTracer {
         	
         }
 		
-		//session.getTransaction().commit();
+		session.getTransaction().commit();
 		session.close();
 	}
 	

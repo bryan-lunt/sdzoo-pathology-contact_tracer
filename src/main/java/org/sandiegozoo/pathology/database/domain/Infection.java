@@ -49,7 +49,14 @@ public class Infection {
 	}
 	
 	public String toString(){
-		return "INFECTION(" + id + ") ANIM: " + animal_id + " [ " + onset_date.getTime() + " : " + end_date.getTime() + " ]  DoDx:" + (diagnosis_date != null ? diagnosis_date.getTime() : "NONE") + " lingers " + days_linger + " days.";
+		String ret = "INFECTION(" + id + ")";
+		ret += " ANIM: " + animal_id;
+		ret += " [ " + onset_date.getTime() + " : ";
+		ret += (end_date != null ? end_date.getTime().toString() : "ONGOING") + " ]";
+		ret += "  DoDx:" + (diagnosis_date != null ? diagnosis_date.getTime() : "NONE");
+		ret += " lingers " + days_linger + " days.";
+				
+		return ret;
 	}
 	
 }

@@ -49,7 +49,7 @@ public class InfectionHandler extends CSVInput {
 		if(nextLine.length >= 4){
 			try{
 				cure_date = cure_date_handler.parse(nextLine[3]);
-			}catch(Exception e){}
+			}catch(Exception e){cure_date = new GregorianCalendar();}
 		}
 		
 		Calendar diagnosis_date = null;
@@ -88,7 +88,7 @@ public class InfectionHandler extends CSVInput {
 		
 		//Already saved once
     	//session.save(theAnimal);
-    	session.save(theInfection);
+    	session.persist(theInfection);
  
 	}
 	
