@@ -1,20 +1,23 @@
 This document describes the input and output formats for the current, basic Contact Tracer program.
 
+Conventions
+-----------
+
 All input and output formats are CSV.
 
-All dates are of the format "YYYY-MM-DD"
+All dates are of the format "YYYY-MM-DD", "MM/DD/YYYY", with "" or "0" for missing data.
 
 Inputs in < brackets > are optional.
 
 INPUT formats
 =============
 
-Timeline
+Housing History Timeline
 --------
 
-Timeline files contain information about which patient was in which location at which time.
+Housing files contain information about which patient was in which location at which time.
 
-	patient_native_id (Free text), move_in (Date), move_out (Date)
+	animal_native_id (Free text), enclosure_name (Free text), move_in (Date), move_out (Date) (Use "" or "0" for ongoing.)
 
 
 Infections
@@ -44,7 +47,7 @@ Basic Diagnosis
 
 This convinience file allows the program to guess the onset and linger dates based on the diagnosis date and default parameters. (Default parameters are provided elsewhere.)
 
-	animal_native_ID (free text), DoDx (Date), <disease_name> (Free text)
+	animal_native_ID (free text), diagnosis_date (Date), <disease_name> (Free text)
 
 
 OUTPUTS

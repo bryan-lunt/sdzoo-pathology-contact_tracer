@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FileSelectorPanel extends JPanel {
 	
@@ -40,6 +41,7 @@ public class FileSelectorPanel extends JPanel {
 			// TODO Open up the file dialog
 			JFileChooser myChooser = new JFileChooser(lastDirectory);
 			myChooser.setMultiSelectionEnabled(false);
+			myChooser.setFileFilter(new FileNameExtensionFilter("Comma Separated Values","csv"));
 			int dialog_result = JFileChooser.ERROR_OPTION;
 			
 			if(mode == OPEN_FILE){
@@ -53,6 +55,14 @@ public class FileSelectorPanel extends JPanel {
 			if(dialog_result == JFileChooser.APPROVE_OPTION){
 				File selected = myChooser.getSelectedFile();
 				lastDirectory = selected.getParentFile();
+				
+				if(mode == SAVE_FILE){
+					if(! selected.getName().endsWith(".csv")){
+						selected = new File(selected.getParentFile(), selected.getName() + ".csv");
+					}
+				}
+				
+				
 				setSelectedFile(selected);
 			}
 			

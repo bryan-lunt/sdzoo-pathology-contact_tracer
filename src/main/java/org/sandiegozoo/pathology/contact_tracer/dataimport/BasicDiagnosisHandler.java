@@ -34,7 +34,7 @@ public class BasicDiagnosisHandler extends CSVInput {
 	
 	public void handle_strarray(String[] nextLine) throws Exception{
         
-		//FORMAT: Animal_ID, DoDx, (name of disease?)
+		//FORMAT: Animal_ID, diagnosis_date, (name of disease?)
 		
 		String animal_native_id = nextLine[0].trim();
 		
@@ -42,6 +42,15 @@ public class BasicDiagnosisHandler extends CSVInput {
 		
 		Calendar onset_date = (Calendar)diagnosis_date.clone();
 		onset_date.add(Calendar.DATE, -1 * days_before);
+		
+		String input_disease_name = null;
+		if(nextLine.length >= 3){
+			input_disease_name = nextLine[2].trim();
+			if("".equals(input_disease_name)){
+				input_disease_name = null;
+			}
+		}
+		
 		
 		Calendar cure_date = new GregorianCalendar();//TODO: Should it really be today?
 		
@@ -53,7 +62,7 @@ public class BasicDiagnosisHandler extends CSVInput {
 		theInfection.onset_date = onset_date;
 		theInfection.end_date = cure_date;
 		theInfection.diagnosis_date = diagnosis_date;
-		theInfection.name = null;
+		theInfection.name = input_disease_name;
 		theInfection.notes = null;
 		theInfection.animal_id = theAnimal;
     	

@@ -30,15 +30,15 @@ public class App implements Callable<Object>
     	
     	//Command line options.
     	Options program_options = new Options();
-    	program_options.addOption("t", true, "Timeline file");
+    	program_options.addOption("t", true, "Housing Timeline file");
     	program_options.addOption("i", true, "Infection file");
     	program_options.addOption("s", true, "Simple Diagnosis file (you must also use BETA and GAMMA when using this input.");
-    	program_options.addOption("b", "beta", true, "The number of days before DoDx to assume as the onset date. 0,1,2, etc. ");
+    	program_options.addOption("b", "beta", true, "The number of days before diagnosis date to assume as the onset date. 0,1,2, etc. ");
     	program_options.addOption("g", "gamma", true, "The number of days the contagion will linger in an enclosure after the sick animal leaves. 0,1,2, etc. ");
-    	program_options.addOption("c", true, "Environmental contamination file");
+    	program_options.addOption("e", true, "Environment file");
     	
     	program_options.addOption("o", true, "Output Exposures Filename");
-    	program_options.addOption("d", true, "Save Contaminations");
+    	program_options.addOption("d", true, "Save Environments (including any in input)");
     	
     	program_options.addOption("h", "help", false, "Print this help message.");
     	
@@ -98,8 +98,8 @@ public class App implements Callable<Object>
 	    	   
 	       }
 	       
-	       if(cmd.hasOption("c")){
-	    	   main_app.addInputHandler(new ContaminationHandler(new File(cmd.getOptionValue("c"))));
+	       if(cmd.hasOption("e")){
+	    	   main_app.addInputHandler(new ContaminationHandler(new File(cmd.getOptionValue("e"))));
 	       } 
 	       
 	       

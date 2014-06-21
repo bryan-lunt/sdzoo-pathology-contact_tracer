@@ -18,14 +18,15 @@ import org.sandiegozoo.pathology.contact_tracer.App;
 public class CTMainFrame extends JFrame {
 
 	private NamedComponentPanel basicPanel;
-	private NamedComponentPanel advancedPanel;
 	
 	abstract class GoAction extends AbstractAction {
 		public GoAction(String in){
 			super(in);
+			myname = in;
 		}
 		
 		protected App myApp;
+		protected String myname;
 		
 		protected void createApp(){
 			myApp = new App();
@@ -33,6 +34,7 @@ public class CTMainFrame extends JFrame {
 		
 		protected void go(){
 			setEnabled(false);
+			this.putValue(Action.NAME,"Running, please wait...");
 			
 			new Thread(){
 				public void run(){
@@ -44,52 +46,12 @@ public class CTMainFrame extends JFrame {
 						e.printStackTrace();
 						JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 					}finally{
+						putValue(Action.NAME,myname);
 						setEnabled(true);
 					}
 				}
 			}.start();
 		}
-	}
-
-	class AdvancedGoAction extends GoAction {
-		
-		NamedComponentPanel subject;
-		
-		public AdvancedGoAction(NamedComponentPanel in){
-			super("GO");
-			subject = in;
-		}
-		
-		public void actionPerformed(ActionEvent arg0) {
-			createApp();
-			
-			myApp.exposure_output_file = ((FileSelectorPanel)subject.getNamed("output_file")).getSelectedFile();
-			
-			myApp.contamination_output_file = ((FileSelectorPanel)subject.getNamed("contamination_output_file")).getSelectedFile();
-			
-			File timeline_file = ((FileSelectorPanel)subject.getNamed("timeline_file")).getSelectedFile();
-			if(timeline_file != null){
-				myApp.input_handlers.add(new TimelineHandler(timeline_file));
-			}
-			
-			File infection_file = ((FileSelectorPanel)subject.getNamed("infection_file")).getSelectedFile();
-			if(infection_file != null){
-				myApp.input_handlers.add(new InfectionHandler(infection_file));
-			}
-			
-			//myApp.input_handlers.add(e)
-			//myApp.limit_enclosures_file = ((FileSelectorPanel)subject.getNamed("enclosures_file")).getSelectedFile();
-			
-			File contamination_file = ((FileSelectorPanel)subject.getNamed("contamination_file")).getSelectedFile();
-			if(contamination_file != null){
-				myApp.input_handlers.add(new ContaminationHandler(contamination_file));
-			}
-			
-			
-			go();
-			
-		}
-		
 	}
 	
 	class BasicGoAction extends GoAction {
@@ -103,8 +65,13 @@ public class CTMainFrame extends JFrame {
 		
 		public void actionPerformed(ActionEvent arg0) {
 			createApp();
+			boolean fail = false; 
 			
 			myApp.exposure_output_file = ((FileSelectorPanel)subject.getNamed("output_file")).getSelectedFile();
+			if(myApp.exposure_output_file == null){
+				JOptionPane.showMessageDialog(null, "You must select an output file.", "Missing Output", JOptionPane.ERROR_MESSAGE);
+				fail = true;
+			}
 			
 			myApp.contamination_output_file = ((FileSelectorPanel)subject.getNamed("contamination_output_file")).getSelectedFile();
 			
@@ -112,7 +79,12 @@ public class CTMainFrame extends JFrame {
 			File timeline_file = ((FileSelectorPanel)subject.getNamed("timeline_file")).getSelectedFile();
 			if(timeline_file != null){
 				myApp.input_handlers.add(new TimelineHandler(timeline_file));
+			}else{
+				JOptionPane.showMessageDialog(null, "You must select a housing timeline file.", "Missing Input", JOptionPane.ERROR_MESSAGE);
+				fail = true;
 			}
+			
+			
 			
 			File diagnosis_file = ((FileSelectorPanel)subject.getNamed("diagnosis_file")).getSelectedFile();
 			if(diagnosis_file != null){
@@ -122,29 +94,26 @@ public class CTMainFrame extends JFrame {
 				int gamma = ((Integer)spinners.gamma_spin.getValue()).intValue();
 				myApp.input_handlers.add(new BasicDiagnosisHandler(diagnosis_file,beta,gamma));
 			}
-			//See advanced version if you want other input files.
 			
-			go();
+			File infections_file = ((FileSelectorPanel)subject.getNamed("infection_file")).getSelectedFile();
+			if(infections_file != null){
+				myApp.input_handlers.add(new InfectionHandler(infections_file));
+			}
 			
-		}
-		
-	}
-	
-	public static final String ADVANCED = "Advanced Usage";
-	public static final String BASIC = "Basic Usage";
-	
-	private class SwitchListener implements ItemListener{
-
-		Container with_cardlayout;
-		
-		public SwitchListener(Container cl){
-			with_cardlayout = cl;
+			File contaminations_in_file = ((FileSelectorPanel)subject.getNamed("contamination_file")).getSelectedFile();
+			if(contaminations_in_file != null){
+				myApp.input_handlers.add(new ContaminationHandler(contaminations_in_file));
+			}
 			
-		}
-		
-		public void itemStateChanged(ItemEvent e) {
-			// TODO Auto-generated method stub
-			((CardLayout)(with_cardlayout.getLayout())).show(with_cardlayout, (String)e.getItem());
+			if(diagnosis_file == null && infections_file == null && contaminations_in_file == null){
+				JOptionPane.showMessageDialog(null, "You must select at least one of: Basic Diagnosis file, Infections file, Environments file.", "Missing Input", JOptionPane.ERROR_MESSAGE);
+				fail = true;
+			}
+			
+			if(!fail){
+				go();
+			}
+			
 		}
 		
 	}
@@ -155,26 +124,8 @@ public class CTMainFrame extends JFrame {
 		
 		this.setLayout(new BorderLayout());
 		
-		JPanel comboBoxPanel = new JPanel();
-		String comboBoxItems[] = { ADVANCED, BASIC };
-		JComboBox cb = new JComboBox(comboBoxItems);
-		cb.setEditable(false);
-		comboBoxPanel.add(cb);
-		
-		JPanel cards = new JPanel();
-		cards.setLayout(new CardLayout());
-		
-		//setup the advancedPanel
-		this.createAdvancedPanel();
-		cards.add(advancedPanel, ADVANCED);
-		
 		this.createBasicPanel();
-		cards.add(basicPanel, BASIC);
-		
-		cb.addItemListener(new SwitchListener(cards));
-		
-		this.add(comboBoxPanel, BorderLayout.NORTH);
-		this.add(cards, BorderLayout.CENTER);
+		this.add(basicPanel, BorderLayout.CENTER);
 		
 		this.pack();
 		
@@ -182,65 +133,35 @@ public class CTMainFrame extends JFrame {
 		
 		
 	}
-	
-	//Cant be static because the action needs a reference to an instance.
-	private void createAdvancedPanel(){
-		advancedPanel = new NamedComponentPanel();
-		advancedPanel.setLayout(new BoxLayout(advancedPanel,BoxLayout.Y_AXIS));
-		advancedPanel.add(new JLabel("Outputs:"));
-		FileSelectorPanel output_file_panel = new FileSelectorPanel("Exposures Output File");
-		output_file_panel.setMode(FileSelectorPanel.SAVE_FILE);
-		advancedPanel.addNamed("output_file", output_file_panel);
 		
-		FileSelectorPanel output_contamination_panel = new FileSelectorPanel("Contaminations Output File (will include inputed contaminations.)");
-		output_contamination_panel.setMode(FileSelectorPanel.SAVE_FILE);
-		advancedPanel.addNamed("contamination_output_file",output_contamination_panel);
-		
-		
-		advancedPanel.add(new JSeparator(JSeparator.HORIZONTAL));
-		advancedPanel.add(new JLabel("Inputs:"));
-		
-		advancedPanel.addNamed("timeline_file", new FileSelectorPanel("Timeline Input File"));
-		advancedPanel.addNamed("infection_file", new FileSelectorPanel("Infection Input File"));
-		//advancedPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
-		advancedPanel.addNamed("contamination_file", new FileSelectorPanel("Other Enclosure Contaminations (ex: Environmental) File (Optional)"));
-		
-		advancedPanel.add(new JSeparator(JSeparator.HORIZONTAL));
-		
-		NamedComponentPanel advancedGoPanel = new NamedComponentPanel();
-		advancedGoPanel.setLayout(new BorderLayout());
-		
-		JButton advancedGo = new JButton(new AdvancedGoAction(advancedPanel));//TODO: Swap out for an action.
-		advancedGoPanel.addNamed("go_button", advancedGo);
-		advancedPanel.addNamed("go_panel",advancedGoPanel);
-		
-		advancedPanel.add(new JSeparator(JSeparator.HORIZONTAL));
-		
-	}
-	
-
-	
 	private void createBasicPanel(){
 		basicPanel = new NamedComponentPanel();
 		basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
 		
+		
+		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+		basicPanel.add(new JLabel("Basic Inputs:"));
+		
+		basicPanel.addNamed("timeline_file", new FileSelectorPanel("Housing Timeline Input File (Required)"));
+		basicPanel.addNamed("diagnosis_file", new FileSelectorPanel("Diagnosis Input File (infection periods guessed.) (One required *)"));
+		basicPanel.addNamed("default_values", new BetaGammaSpinners());
+		
+		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+		basicPanel.add(new JLabel("Advanced Inputs:"));
+		
+		basicPanel.addNamed("infection_file", new FileSelectorPanel("Infection Input File (One required *)"));
+		basicPanel.addNamed("contamination_file", new FileSelectorPanel("Other Enclosure Environments (ex: Contamiation) File (Optional)"));
+		
+		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+		
 		basicPanel.add(new JLabel("Outputs:"));
-		FileSelectorPanel output_file_panel = new FileSelectorPanel("Exposures Output File");
+		FileSelectorPanel output_file_panel = new FileSelectorPanel("Exposures Output File (Required)");
 		output_file_panel.setMode(FileSelectorPanel.SAVE_FILE);
 		basicPanel.addNamed("output_file", output_file_panel);
 		
-		FileSelectorPanel output_contamination_panel = new FileSelectorPanel("Contaminations Output File (will include inputed contaminations.)");
+		FileSelectorPanel output_contamination_panel = new FileSelectorPanel("Environments Output File (will include inputed Environments.) (Optional)");
 		output_contamination_panel.setMode(FileSelectorPanel.SAVE_FILE);
 		basicPanel.addNamed("contamination_output_file",output_contamination_panel);
-		
-		
-		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
-		basicPanel.add(new JLabel("Inputs:"));
-		
-		basicPanel.addNamed("timeline_file", new FileSelectorPanel("Timeline Input File"));
-		basicPanel.addNamed("diagnosis_file", new FileSelectorPanel("Diagnosis Input File (infection periods guessed.)"));
-		basicPanel.addNamed("default_values", new BetaGammaSpinners());
-		//basicPanel.addNamed("enclosures_file", new FileSelectorPanel("Limit Enclosures File (Optional)"));
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
@@ -263,14 +184,14 @@ public class CTMainFrame extends JFrame {
 			
 			SpringLayout bg_spin_layout = new SpringLayout();
 			
-			JLabel beta_label = new JLabel("Contagious BETA days before DoDx");
+			JLabel beta_label = new JLabel("Contagious B days before diagnosis_date.");
 			this.add(beta_label);
 			
 			beta_spin = new JSpinner(new SpinnerNumberModel(0, 0, 1000000, 1));
 			beta_label.setLabelFor(beta_spin);
 			this.add(beta_spin);
 			
-			JLabel gamma_label = new JLabel("Contagion lingers GAMMA days in the environment");
+			JLabel gamma_label = new JLabel("Contagion lingers G days in the environment");
 			this.add(gamma_label);
 			
 			gamma_spin = new JSpinner(new SpinnerNumberModel(0,0, 1000000, 1));
