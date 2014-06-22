@@ -10,6 +10,38 @@ Along the way, it is possible also to just declare an enclosure to be contaminat
 For a description of input and output formats, see the file "./doc/FORMATS.md" .
 
 
+Running the program
+-------------------
+
+(If you did not receive an executable .jar file, but rather the source code, you will first need to build the program.)
+
+The program can be used two ways, either as a GUI (Graphical User Interface) program, or entirely from the command-line.
+
+Please see the "./doc/FORMATS.md" file for an explanation of input and output formats.
+
+## GUI
+
+To start the program from the command-line (assuming you are still in the build directory), type :
+
+	java -jar ./target/contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar
+
+Also, you can double-click on the file 
+
+	contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar
+
+This will start the GUI version.
+
+
+## Command Line
+
+To get a description of the command-line arguments needed to run the program from the command-line, type:
+
+	java -jar ./target/contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar --help
+
+This will explain all of the command-line options needed to specify inputs solely from the command-line. (As you might inside a script or one a server or other headless machine.)
+
+
+
 Building the program
 --------------------
 
@@ -26,23 +58,3 @@ Typing
 
 at the command-line will accomplish this, it downloads all the project dependencies.
 
-Running the program
--------------------
-
-The program can be used two ways, either as a GUI (Graphical User Interface) program, or entirely from the command-line.
-
-To start the program from the command-line (assuming you are still in the build directory), type :
-
-	java -jar ./target/contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar
-
-Also, you can double-click on the file contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar
-
-This will start the GUI version.
-
-To get a description of the command-line arguments needed to run the program from the command-line, type:
-
-	java -jar ./target/contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar --help
-
-This will explain all of the command-line options needed to specify inputs solely from the command-line. (As you might inside a script or one a server or other headless machine.)
-
-Please see the "./doc/FORMATS.md" file for an explanation of input and output formats.
