@@ -15,7 +15,11 @@ Building the program
 
 (If you were distributed an executable jar file, this step is unnecessary.)
 
-To build this program, you must have a new (version 1.6 or greater?) JDK installed, and maven.
+To build this program, you must have a new (version 1.6 or greater?) JDK installed, and maven. 
+
+( http://www.oracle.com/technetwork/java/javase/downloads/index.html?ssSourceSiteId=otnjp )
+( http://maven.apache.org/ )
+
 Typing 
 
 	mvn package
@@ -29,15 +33,15 @@ The program can be used two ways, either as a GUI (Graphical User Interface) pro
 
 To start the program from the command-line (assuming you are still in the build directory), type :
 
-	java -jar ./target/contact-tracer-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+	java -jar ./target/contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar
 
-Also, you can double-click on the file contact-tracer-0.0.1-SNAPSHOT-jar-with-dependencies.jar
+Also, you can double-click on the file contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar
 
 This will start the GUI version.
 
 To get a description of the command-line arguments needed to run the program from the command-line, type:
 
-	java -jar ./target/contact-tracer-0.0.1-SNAPSHOT-jar-with-dependencies.jar --help
+	java -jar ./target/contact-tracer-0.0.4-SNAPSHOT-jar-with-dependencies.jar --help
 
 This will explain all of the command-line options needed to specify inputs solely from the command-line. (As you might inside a script or one a server or other headless machine.)
 
