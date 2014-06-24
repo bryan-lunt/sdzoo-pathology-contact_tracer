@@ -62,7 +62,7 @@ public class ContaminationHandler extends CSVInput {
     	
     	//Already saved once
     	//session.save(theEnclosure);
-    	session.save(theContamination);
+    	session.persist(theContamination);
 		
 	}
 	

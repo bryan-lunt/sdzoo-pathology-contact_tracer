@@ -69,7 +69,7 @@ public class BasicDiagnosisHandler extends CSVInput {
 		
 		//Already saved once
     	//session.save(theAnimal);
-    	session.save(theInfection);
+    	session.persist(theInfection);
  
 	}
 	

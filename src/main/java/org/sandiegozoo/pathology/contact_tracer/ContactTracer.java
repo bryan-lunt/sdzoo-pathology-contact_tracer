@@ -108,7 +108,7 @@ public class ContactTracer {
         List<Contamination> contaminations = (List<Contamination>)find_contaminations.list();
         for(Contamination one_contam : contaminations){
         	
-        	Animal original_animal = one_contam.source_inf_id.animal_id;
+        	Animal original_animal = one_contam.source_inf_id == null ? null : one_contam.source_inf_id.animal_id;
         	
         	Query find_contacts;
         	
