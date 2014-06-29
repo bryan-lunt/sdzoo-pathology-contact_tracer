@@ -123,14 +123,14 @@ public class App implements Callable<Object>
     
     public File exposure_output_file = null;
     public File contamination_output_file = null;
-
+    
     public List<CTIOHandler> input_handlers = new ArrayList<CTIOHandler>();
     
     public void addInputHandler(CTIOHandler input){
     	this.input_handlers.add(input);
     }
     
-    private SessionFactory sessionFactory;
+    public SessionFactory sessionFactory;
     
     public App(){
 // A SessionFactory is set up once for an application

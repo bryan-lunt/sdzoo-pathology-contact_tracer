@@ -19,6 +19,24 @@ public class PathDBUtil {
 		encs_by_id.clear();
 	}
 	
+	public void close(){
+		session.close();
+	}
+	
+	public void truncateAll(){
+		String[] foo = {"Exposure","Contamination", "Infection", "Housing", "Animal", "Enclosure"};
+		
+		for(String s : foo)
+		{
+			session.beginTransaction();
+			Query myQ = session.createQuery("delete from " + s);
+			myQ.executeUpdate();
+			session.flush();
+			session.clear();
+			session.getTransaction().commit();
+		}
+	}
+	
 	public PathDBUtil(Session in){
 		session = in;
 		animal_from_nid = session.createQuery( "from Animal where native_id = :nid" );

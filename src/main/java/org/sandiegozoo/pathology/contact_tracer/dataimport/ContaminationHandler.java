@@ -31,7 +31,7 @@ public class ContaminationHandler extends CSVInput {
         
 		
 		
-		//FORMAT: Enclosure_id, start_date, end_date (today if blank), direct_or_environmental (environmental if blank)
+		//FORMAT: Enclosure_id, start_date, end_date (today if blank), {Subsequent columns Ignored}
 		
 		
 		
@@ -47,18 +47,12 @@ public class ContaminationHandler extends CSVInput {
 			}
 		}
 		
-		Boolean is_direct = false;
-		if(nextLine.length >= 4){
-			is_direct = boolean_helper(nextLine[3]);
-		}
-		
     	Enclosure theEnclosure = path_db_util.completeOrCreateEnclosure(enclosure_id);
     	
     	Contamination theContamination = new Contamination();
     	theContamination.enc_id = theEnclosure;
     	theContamination.start_date = start_date;
     	theContamination.end_date = end_date;
-    	theContamination.is_direct = is_direct;
     	
     	//Already saved once
     	//session.save(theEnclosure);

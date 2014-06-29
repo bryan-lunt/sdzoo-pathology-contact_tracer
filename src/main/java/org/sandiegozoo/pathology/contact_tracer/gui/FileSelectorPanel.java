@@ -23,14 +23,23 @@ public class FileSelectorPanel extends JPanel {
 	public int getMode(){ return mode;}
 	
 	private File selectedFile = null;
-	public void setSelectedFile(File in){selectedFile = in; filename_display.setText(in.getName());}
-	public File getSelectedFile(){return selectedFile;}
+	public void setSelectedFile(File in){
+		selectedFile = in;
+		filename_display.setText(null == in ? "" : in.getName());
+	}
+	public File getSelectedFile(){
+		return selectedFile;
+	}
+	public void clear(){
+		this.setSelectedFile(null);
+	}
 	
 	
 	private JLabel title_label;
 	private JPanel subpanel;
 	private JTextField filename_display;
 	private JButton choose_button;
+	private JButton clear_button;
 	
 	class FileSelectorPanelAction extends AbstractAction{
 		public FileSelectorPanelAction(){
@@ -69,6 +78,16 @@ public class FileSelectorPanel extends JPanel {
 		}
 	}
 	
+	class FileSelectorClearAction extends AbstractAction{
+		public FileSelectorClearAction(){
+			super("Clear");
+		}
+		
+		public void actionPerformed(ActionEvent e){
+			clear();
+		}
+	}
+	
 	private static final int MARGIN = 5;
 	private static final int SEPARATION = 10;
 	
@@ -85,11 +104,13 @@ public class FileSelectorPanel extends JPanel {
 		filename_display.setMinimumSize(new Dimension());
 		
 		choose_button = new JButton(new FileSelectorPanelAction());
+		clear_button = new JButton(new FileSelectorClearAction());
 		
 
 		this.add(title_label);
 		this.add(filename_display);
 		this.add(choose_button);
+		this.add(clear_button);
 		
 		this.setTitle(inTitle);
 		
@@ -100,10 +121,13 @@ public class FileSelectorPanel extends JPanel {
 		
 		my_spring.putConstraint(SpringLayout.NORTH, filename_display, SEPARATION, SpringLayout.SOUTH, title_label);
 		my_spring.putConstraint(SpringLayout.NORTH, choose_button, SEPARATION, SpringLayout.SOUTH, title_label);
+		my_spring.putConstraint(SpringLayout.NORTH, clear_button, SEPARATION, SpringLayout.SOUTH, title_label);
 		
 		my_spring.putConstraint(SpringLayout.WEST, choose_button, SEPARATION, SpringLayout.EAST, filename_display);
+		my_spring.putConstraint(SpringLayout.WEST, clear_button, SEPARATION, SpringLayout.EAST, choose_button);
 		
-		my_spring.putConstraint(SpringLayout.EAST, this, MARGIN, SpringLayout.EAST, choose_button);
+		
+		my_spring.putConstraint(SpringLayout.EAST, this, MARGIN, SpringLayout.EAST, clear_button);
 		my_spring.putConstraint(SpringLayout.SOUTH, this,  MARGIN, SpringLayout.SOUTH, filename_display);
 		
 		

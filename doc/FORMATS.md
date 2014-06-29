@@ -36,13 +36,10 @@ So:
 Is an acceptable input line.
 
 
-Contaminations
+Enclosure Contaminations
 --------------
 
-	enclosure_native_id (Free text), start_date (Date), <end_date> (Date, defaults to today if not given.), <direct_or_environmental "0" or "1"> (defaults to 0 if not given, the proceeding comma is optional.)
-
-
-Basic Diagnosis
+	enclosure_native_id (Free text), start_date (Date), <end_date> (Date, defaults to today if not given.) 
 ---------------
 
 This convinience file allows the program to guess the onset and linger dates based on the diagnosis date and default parameters. (Default parameters are provided elsewhere.)
@@ -54,14 +51,14 @@ OUTPUTS
 =======
 
 
-Exposure
+Exposures
 --------
 
-	animal_native_ID (text), source_animal_native_id (text, blank if unavailable, for example exposed to an environmental contamination.), duration_in_days (integer), start_date (Date), end_date (Date), enclosure_name
+	animal_native_ID (text), source_animal_native_id (text, blank if unavailable, for example exposed to an environmental contamination.), duration_in_days (integer), start_date (Date), end_date (Date), enclosure_name (text)
 
-Contamination
+Enclosure Contaminations
 -------------
 
 This file contains all the enclosure contaminations identified by the program. It is compatible with the input Contaminations, which will ignore the extra field.
 
-	enclosure_native_id (text), start_date (date), end_date (date), direct_or_environmental (integer), source_animal_native_ID (text)
+	enclosure_native_id (text), start_date (date), end_date (date), source_animal_native_ID (text)
