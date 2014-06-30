@@ -95,11 +95,21 @@ public class ContactTracer {
 	}
 	
 	private void truncate_overlapping_contaminations(Session session, Infection one_inf){
+		//We truncate overlapping contaminations _of the same enclosure_ here.
+		
+		
+		
 		//If we are going to truncate or combine overlapping contaminations, it should happen here.
-		Query find_contaminations_by_infection = session.createQuery("from Contamination where source_inf_id = :sinf order by start_date asc");
+		Query find_contaminations_by_infection = session.createQuery("from Contamination where source_inf_id = :sinf order by enc_id.id asc, start_date asc");
 		find_contaminations_by_infection.setEntity("sinf", one_inf);
 		
 		List<Contamination> contaminations_from_this_infection = (List<Contamination>)find_contaminations_by_infection.list();
+		
+		//DEBUG
+		for(Contamination c : contaminations_from_this_infection){
+			System.err.println("DEBUG" + c.toString());
+		}
+		
 		//We really want to look at these two at a time, thus the weird loop.
 		//From the query, we are already sorted.
 		if(contaminations_from_this_infection.size() > 1){
@@ -109,7 +119,8 @@ public class ContactTracer {
 			for(int i = 1;i< upper_limit;i++){
 				Contamination current_contam = contaminations_from_this_infection.get(i);
 				
-				if(!previous_contam.end_date.before(current_contam.start_date) ){
+				//They must be contaminations of the same enclosure, and they must overlap.
+				if(previous_contam.enc_id.equals(current_contam.enc_id) && !previous_contam.end_date.before(current_contam.start_date) ){
 					Calendar tmp_end = (Calendar) current_contam.start_date.clone();
 					tmp_end.add(Calendar.DATE, -1);//Minus one so that that date doesn't get double counted.
 					
