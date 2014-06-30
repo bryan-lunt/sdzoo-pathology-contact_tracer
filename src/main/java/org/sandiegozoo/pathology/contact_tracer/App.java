@@ -29,7 +29,8 @@ public class App implements Callable<Object>
     	}
     	
     	//Command line options.
-    	Options program_options = new Options();
+    	OrderedOptions program_options = new OrderedOptions();
+    	program_options.addOption("h", "help", false, "Print this help message.");
     	program_options.addOption("t", true, "Housing Timeline file");
     	program_options.addOption("i", true, "Infection file");
     	program_options.addOption("s", true, "Simple Diagnosis file (you must also use BETA and GAMMA when using this input.");
@@ -42,7 +43,7 @@ public class App implements Callable<Object>
     	
     	program_options.addOption("o", "overlap", false, "KEEP overlapping contaminations/contacts from the same source infection and animal. (Default is to truncate the earlier one.)");
     	
-    	program_options.addOption("h", "help", false, "Print this help message.");
+    	
     	
     	CommandLineParser parser = new PosixParser();
     	CommandLine cmd = parser.parse( program_options, args);
@@ -50,8 +51,18 @@ public class App implements Callable<Object>
     	
     	// automatically generate the help statement
     	if(cmd.hasOption("h")){
-    		HelpFormatter formatter = new HelpFormatter();
-    		formatter.printHelp("java -jar this-jar-file.jar", program_options);
+    		HelpFormatter formatter = program_options.getOrderedHelp();
+    		
+    		//CITATION:
+    		//Copied from [ http://stackoverflow.com/questions/11158235/get-name-of-executable-jar-from-within-main-method ]
+    		//To get the name of the jar:
+    		String jar_name = new java.io.File(App.class.getProtectionDomain()
+    				  .getCodeSource()
+    				  .getLocation()
+    				  .getPath())
+    				.getName();
+    		
+    		formatter.printHelp("java -jar " + jar_name , program_options);
     		System.exit(64);
     	}
     	
@@ -198,5 +209,6 @@ public class App implements Callable<Object>
         
         return null;
     }
+    
     
 }
