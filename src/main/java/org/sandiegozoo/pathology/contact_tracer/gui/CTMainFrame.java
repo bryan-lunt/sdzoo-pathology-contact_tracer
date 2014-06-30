@@ -150,6 +150,8 @@ public class CTMainFrame extends JFrame {
 				fail = true;
 			}
 			
+			myApp.truncate_overlapping = ((LabeledCheckBox)subject.getNamed("truncate_lcb")).isSelected();
+			
 			if(!fail){
 				go();
 			}
@@ -216,6 +218,10 @@ public class CTMainFrame extends JFrame {
 		FileSelectorPanel output_file_panel = new FileSelectorPanel("<html>Contact Output File <em>(Required)</em></html>");
 		output_file_panel.setMode(FileSelectorPanel.SAVE_FILE);
 		basicPanel.addNamed("output_file", output_file_panel);
+		
+		LabeledCheckBox truncate_overlapping_cb = new LabeledCheckBox("Truncate overlapping Contaminations from / Contacts to the same infected individual?");
+		truncate_overlapping_cb.setSelected(true);
+		basicPanel.addNamed("truncate_lcb", truncate_overlapping_cb);
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
@@ -316,4 +322,41 @@ public class CTMainFrame extends JFrame {
 		
 	}
 	
+	class LabeledCheckBox extends JPanel {
+		private JLabel mylabel;
+		private JCheckBox mybox;
+		
+		public LabeledCheckBox(String in_label){
+			
+			SpringLayout lcb_layout = new SpringLayout();
+			
+			this.setLayout(lcb_layout);
+			
+			mylabel = new JLabel(in_label);
+			mybox = new JCheckBox();
+			
+			mybox.setSelected(true);
+			mylabel.setLabelFor(mybox);
+			
+			this.add(mylabel);
+			this.add(mybox);
+			
+			lcb_layout.putConstraint(SpringLayout.NORTH, mylabel, 5, SpringLayout.NORTH, this);
+			lcb_layout.putConstraint(SpringLayout.NORTH, mybox, 5, SpringLayout.NORTH, this);
+			lcb_layout.putConstraint(SpringLayout.WEST,mylabel,5,SpringLayout.WEST,this);
+			lcb_layout.putConstraint(SpringLayout.WEST, mybox, 5, SpringLayout.EAST, mylabel);
+			lcb_layout.putConstraint(SpringLayout.EAST, this, 5, SpringLayout.EAST, mybox);
+			lcb_layout.putConstraint(SpringLayout.SOUTH, this, 5, SpringLayout.SOUTH, mylabel);
+			lcb_layout.putConstraint(SpringLayout.SOUTH, this, 5, SpringLayout.SOUTH, mybox);
+			
+		}
+		
+		public boolean isSelected(){
+			return mybox.isSelected();
+		}
+		
+		public void setSelected(boolean in){
+			mybox.setSelected(in);
+		}
+	}
 }

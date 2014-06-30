@@ -37,17 +37,15 @@ public class ContactTracer {
 	
 	
 	
-	public void process_contaminations(){process_contaminations(true);}
-	public void process_contaminations(boolean truncate){
+	public void process_contaminations(){process_contaminations(true,false);}
+	public void process_contaminations(boolean truncate_table, boolean truncate_overlapping){
 		Session session = factory.openSession();
 		Transaction myT = session.beginTransaction();
 		
 		//Start with a clean slate?
-		if(truncate){
+		if(truncate_table){
 			Query myQ = session.createQuery("delete from Contamination");
 			myQ.executeUpdate();
-			//session.getTransaction().commit();
-			//session.beginTransaction();
 		}
 		
 		Query findInfections = session.createQuery("from Infection");
@@ -81,6 +79,12 @@ public class ContactTracer {
 				session.save(oneContamination);
 			}
 			
+			session.flush();
+			
+			if(truncate_overlapping){
+				this.truncate_overlapping_contaminations(session, one_inf);
+				session.flush();
+			}
 			
 		}
 		
@@ -88,6 +92,35 @@ public class ContactTracer {
 		session.getTransaction().commit();
 		session.close();
 		
+	}
+	
+	private void truncate_overlapping_contaminations(Session session, Infection one_inf){
+		//If we are going to truncate or combine overlapping contaminations, it should happen here.
+		Query find_contaminations_by_infection = session.createQuery("from Contamination where source_inf_id = :sinf order by start_date asc");
+		find_contaminations_by_infection.setEntity("sinf", one_inf);
+		
+		List<Contamination> contaminations_from_this_infection = (List<Contamination>)find_contaminations_by_infection.list();
+		//We really want to look at these two at a time, thus the weird loop.
+		//From the query, we are already sorted.
+		if(contaminations_from_this_infection.size() > 1){
+			Contamination previous_contam = contaminations_from_this_infection.get(0);
+			
+			int upper_limit = contaminations_from_this_infection.size();
+			for(int i = 1;i< upper_limit;i++){
+				Contamination current_contam = contaminations_from_this_infection.get(i);
+				
+				if(!previous_contam.end_date.before(current_contam.start_date) ){
+					Calendar tmp_end = (Calendar) current_contam.start_date.clone();
+					tmp_end.add(Calendar.DATE, -1);//Minus one so that that date doesn't get double counted.
+					
+					previous_contam.end_date = tmp_end;
+					
+					session.update(previous_contam);
+				}
+				
+				previous_contam = current_contam;
+			}
+		}
 	}
 	
 

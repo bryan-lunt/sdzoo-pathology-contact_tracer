@@ -34,11 +34,13 @@ public class App implements Callable<Object>
     	program_options.addOption("i", true, "Infection file");
     	program_options.addOption("s", true, "Simple Diagnosis file (you must also use BETA and GAMMA when using this input.");
     	program_options.addOption("b", "beta", true, "The number of days before diagnosis date to assume as the onset date. 0,1,2, etc. ");
-    	program_options.addOption("g", "gamma", true, "The number of days the contagion will linger in an enclosure after the sick animal leaves. 0,1,2, etc. ");
-    	program_options.addOption("e", true, "Environment file");
+    	program_options.addOption("g", "gamma", true, "The number of days the contagion will remain in an enclosure after the sick animal leaves. 0,1,2, etc. ");
+    	program_options.addOption("e", true, "Enclosure Contaminations Input file");
     	
-    	program_options.addOption("o", true, "Output Exposures Filename");
-    	program_options.addOption("d", true, "Save Environments (including any in input)");
+    	program_options.addOption("c", true, "Contacts Output Filename");
+    	program_options.addOption("d", true, "Save Enclosure Contaminations (including any in input)");
+    	
+    	program_options.addOption("o", "overlap", false, "KEEP overlapping contaminations/contacts from the same source infection and animal. (Default is to truncate the earlier one.)");
     	
     	program_options.addOption("h", "help", false, "Print this help message.");
     	
@@ -111,13 +113,16 @@ public class App implements Callable<Object>
 	       
 	       //setup OUTPUTS
 	       
-	       if(cmd.hasOption("o")){
-	    	   main_app.exposure_output_file = new File(cmd.getOptionValue("o"));
+	       if(cmd.hasOption("c")){
+	    	   main_app.exposure_output_file = new File(cmd.getOptionValue("c"));
 	       }//Otherwise goes to STDOUT
 	       
 	       if(cmd.hasOption("d")){
 	    	   main_app.contamination_output_file = new File(cmd.getOptionValue("d"));
 	       }
+	       
+	      
+	       main_app.truncate_overlapping = !cmd.hasOption("o");
 	       
 	       
 	       //Main business logic!
@@ -125,6 +130,8 @@ public class App implements Callable<Object>
 	    }
 
     }
+    
+    public boolean truncate_overlapping = false;
     
     public File exposure_output_file = null;
     public File contamination_output_file = null;
@@ -161,7 +168,7 @@ public class App implements Callable<Object>
     	
     	ContactTracer myTracer = new ContactTracer(sessionFactory);
         
-        myTracer.process_contaminations(false);
+        myTracer.process_contaminations(false,truncate_overlapping);
         myTracer.process_exposures();
         
         System.err.println("FINISHED CONTACT TRACER");

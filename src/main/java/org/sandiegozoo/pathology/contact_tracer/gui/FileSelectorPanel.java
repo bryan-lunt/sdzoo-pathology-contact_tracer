@@ -129,6 +129,8 @@ public class FileSelectorPanel extends JPanel {
 		
 		my_spring.putConstraint(SpringLayout.EAST, this, MARGIN, SpringLayout.EAST, clear_button);
 		my_spring.putConstraint(SpringLayout.SOUTH, this,  MARGIN, SpringLayout.SOUTH, filename_display);
+		my_spring.putConstraint(SpringLayout.SOUTH, this, MARGIN, SpringLayout.SOUTH, choose_button);
+		my_spring.putConstraint(SpringLayout.SOUTH, this, MARGIN, SpringLayout.SOUTH, clear_button);
 		
 		
 	}
