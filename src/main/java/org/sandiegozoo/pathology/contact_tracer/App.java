@@ -55,6 +55,11 @@ public class App implements Callable<Object>
     	
     	if(show_gui){
     		System.err.println("Starting GUI, use the flag --help to get a description of command-line usage.");
+    		
+    		// take the menu bar off the jframe
+    		System.setProperty("apple.laf.useScreenMenuBar", "true");
+    		System.setProperty("com.apple.mrj.application.apple.menu.about.name", "ContactTracer");
+    		
     		//Display the GUI to setup and run the program
     		CTMainFrame myMainFrame = new CTMainFrame();
         	myMainFrame.setVisible(true);

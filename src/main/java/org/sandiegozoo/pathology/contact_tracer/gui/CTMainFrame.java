@@ -160,6 +160,8 @@ public class CTMainFrame extends JFrame {
 	
 	public CTMainFrame(){
 		
+		this.setTitle("Infectious Disease Contact Tracer");
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		this.setLayout(new BorderLayout());
@@ -177,8 +179,6 @@ public class CTMainFrame extends JFrame {
 	private void createBasicPanel(){
 		basicPanel = new NamedComponentPanel();
 		basicPanel.setLayout(new BoxLayout(basicPanel, BoxLayout.Y_AXIS));
-		
-		basicPanel.setName("THIS IS A TEST");
 		
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
