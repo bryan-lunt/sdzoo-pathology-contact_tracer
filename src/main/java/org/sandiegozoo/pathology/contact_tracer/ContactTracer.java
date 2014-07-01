@@ -105,11 +105,6 @@ public class ContactTracer {
 		
 		List<Contamination> contaminations_from_this_infection = (List<Contamination>)find_contaminations_by_infection.list();
 		
-		//DEBUG
-		for(Contamination c : contaminations_from_this_infection){
-			System.err.println("DEBUG" + c.toString());
-		}
-		
 		//We really want to look at these two at a time, thus the weird loop.
 		//From the query, we are already sorted.
 		if(contaminations_from_this_infection.size() > 1){
