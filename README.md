@@ -9,7 +9,7 @@ The Infectious Disease Contact Tracer program was created to identify individual
 
 # To run the program
 
-Download program: Download the file “xxxxxx”.  
+Download program: Download the file “contact-tracer-0.1.2-jar-with-dependencies.jar”.  
 
 Navigate to Input files: Specify the location of all input files.  The population housing history is a required input file that will be cross-referenced with one or more additional input files.  Three types of additional input files (see program interface) are allowed and a minimum of one is required.  Uploading more than one additional file will result in an output with appended data (see section on Output Formats>Contact Output File). 
 
