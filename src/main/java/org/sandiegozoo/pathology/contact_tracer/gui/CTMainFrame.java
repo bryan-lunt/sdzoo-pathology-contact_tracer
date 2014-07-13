@@ -189,25 +189,25 @@ public class CTMainFrame extends JFrame {
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
-		basicPanel.addNamed("timeline_file", new FileSelectorPanel("<html>Population Housing history Input File <em>(Required)<em></html>"));
+		basicPanel.addNamed("timeline_file", new FileSelectorPanel("<html>Population Housing History Input File <em>(Required)</em></html>"));
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
-		basicPanel.add(new JustifiedLabel("<html><h4>Choose one or more of the following three input files (one is required):</h4></html>"));
+		basicPanel.add(new JustifiedLabel("<html><h4>Choose one or more of the following three input files <em>(one is required)</em>:</h4></html>"));
 
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
-		basicPanel.addNamed("diagnosis_file", new FileSelectorPanel("Infected Individuals with estimated infectious periods"));
+		basicPanel.addNamed("diagnosis_file", new FileSelectorPanel("Infected Individuals with Estimated Infectious Periods Input File"));
 		basicPanel.addNamed("default_values", new BetaGammaSpinners());
 		
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
-		basicPanel.addNamed("infection_file", new FileSelectorPanel("Infected Individuals with defined infectious periods"));
+		basicPanel.addNamed("infection_file", new FileSelectorPanel("Infected Individuals with Defined Infectious Periods Input File"));
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
-		basicPanel.addNamed("contamination_file", new FileSelectorPanel("Enclosure Contaminations with defined infectious periods"));
+		basicPanel.addNamed("contamination_file", new FileSelectorPanel("Enclosure Contaminations with Defined Infectious Periods Input File"));
 		
 		basicPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 		
@@ -219,7 +219,7 @@ public class CTMainFrame extends JFrame {
 		output_file_panel.setMode(FileSelectorPanel.SAVE_FILE);
 		basicPanel.addNamed("output_file", output_file_panel);
 		
-		LabeledCheckBox truncate_overlapping_cb = new LabeledCheckBox("Truncate overlapping Contaminations from / Contacts to the same infected individual?");
+		LabeledCheckBox truncate_overlapping_cb = new LabeledCheckBox("Remove overlap in Environmental Contaminations?");
 		truncate_overlapping_cb.setSelected(true);
 		basicPanel.addNamed("truncate_lcb", truncate_overlapping_cb);
 		
@@ -274,14 +274,14 @@ public class CTMainFrame extends JFrame {
 			//this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 			this.setLayout(bg_spin_layout);
 			
-			JLabel beta_label = new JLabel("<html>Contagious <em>&beta;</em> days before diagnosis_date</html>");
+			JLabel beta_label = new JLabel("<html>Infectious <em>&beta;</em> days before diagnosis_date</html>");
 			this.add(beta_label);
 			
 			beta_spin = new JSpinner(new SpinnerNumberModel(0, 0, 1000000, 1));
 			beta_label.setLabelFor(beta_spin);
 			this.add(beta_spin);
 			
-			JLabel gamma_label = new JLabel("<html>Contagion remains <em>&gamma;</em> days in the enclosure after the animal moves out</html>");
+			JLabel gamma_label = new JLabel("<html>Infectious agent remains <em>&gamma;</em> days in the enclosure after the animal moves out</html>");
 			this.add(gamma_label);
 			
 			gamma_spin = new JSpinner(new SpinnerNumberModel(0,0, 1000000, 1));
