@@ -117,7 +117,11 @@ public class ContactTracer {
 				//They must be contaminations of the same enclosure, and they must overlap.
 				if(previous_contam.enc_id.equals(current_contam.enc_id) && !previous_contam.end_date.before(current_contam.start_date) ){
 					Calendar tmp_end = (Calendar) current_contam.start_date.clone();
-					tmp_end.add(Calendar.DATE, -1);//Minus one so that that date doesn't get double counted.
+					
+					//Minus one so that that date doesn't get double counted.
+					//The above is wrong, (Unless we are counting all partial days as full days.) because it doesn't count the in-between day.
+					//think of it like moving out and back in on the same day.
+					//tmp_end.add(Calendar.DATE, -1);
 					
 					previous_contam.end_date = tmp_end;
 					
