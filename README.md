@@ -44,17 +44,16 @@ Separate lines should be used to indicate housing changes for the same individua
 
 ## Infected Individuals with Estimated Infectious Periods Input File
 
-
-This input allows the program to estimate the infectious periods from a single date (e.g, diagnosis date).  The user inputs a list of cases and their diagnosis dates, and subsequently specifies the number of days before the diagnosis date during which an animal is considered infectious.  If desired, an option is available to include a time period in days post-removal of the case where the environment remains contaminated (enter "0" in the appropriate box if there is no presumed environmental contamination).
+This input allows the program to estimate the infectious periods from a single date (e.g, diagnosis date).  The user inputs a list of cases and their diagnosis dates, and subsequently specifies the number of days (beta) before the diagnosis date during which an animal is considered infectious.  If desired, an option is available to include a time period (gamma) in days post-removal of the case where the environment remains contaminated (enter "0" in the appropriate box if there is no presumed environmental contamination).
 
 	case_animal_local_id (Free text), diagnosis_date (Date)
 
-Note:  Use of this input file generates output that has the important characteristic of continued exposure accumulation throughout the duration of two individuals’ time in contact.  For example, suppose a user is interested in identifying all individuals exposed to an infectious animal 30 days prior to its diagnosis.  If diagnosis occurs on the date of death and the infected animal was removed then the search would include only the 30 day incubation period prior to diagnosis.  However, if the infected animal remains in the environment for an additional 30 days after diagnosis, the search would include a 60 day period (30 days prior to diagnosis and the 30 days of continued exposure to co-inhabitants after diagnosis).  Thus, output generated from this input file may be most appropriate for studies of a chronic infectious disease.  Alternatively, the selection of an input file with user-defined infectious periods (described below) will search between two specific dates of interest.
+Note:  Use of this input file generates output that has the important characteristic of continued exposure accumulation throughout the duration of two individuals’ time in contact.  For example, suppose a user is interested in identifying all individuals exposed to an infectious animal 30 days prior to its diagnosis.  If diagnosis occurs on the date of death and the infected animal was removed then the search would include only the 30 day incubation period prior to diagnosis.  However, if the infected animal remains in the environment for an additional 30 days after diagnosis, the search would include a 60 day period (30 days prior to diagnosis and the 30 days of continued exposure to co-inhabitants after diagnosis).  Alternatively, the selection of an input file with user-defined infectious periods (described below) will search between two specific dates of interest.
 
 ## Infected Individuals with Defined Infectious Periods Input File
 
 This input file contains a list of all cases and specific dates corresponding to the beginning and end of an infectious period.
-This format may be appropriate for diseases or individuals where infectious periods are specifically known or can be deduced from diagnostic data.  The program has been built to permit storage of additional information, however version 0.1.2 only uses the first four columns to identify contacts.  
+This format may be appropriate for diseases or individuals where infectious periods are specifically known or can be inferred from diagnostic data.  The program has been built to permit storage of additional information, however version 0.1.3 only uses the first four columns to identify contacts.  
 
 	case_animal_local_id (Free text), days_environmental_contamination (integer, 0, 1, 2…; See below.), begin_infectious_date (Date), <end_infectious_date> (Date; See below.), <diagnosis_date> (Date), <disease_name> (Free text), <notes> (Free text)
 
@@ -63,7 +62,7 @@ This format may be appropriate for diseases or individuals where infectious peri
 - end_infectious_date : Input "0" or “” to indicate enclosures currently inhabited - these will default to today’s date.
 
 Unused fields can be left blank and commas are not necessary to separate them when no later column is used.
-Thus, 12345, 0, 2012-01-01 is an acceptable input line.  
+us, 12345, 0, 2012-01-01 is an acceptable input line.  
 
 ## Enclosure Contaminations with Defined Infectious Periods Input File
 
@@ -80,14 +79,48 @@ This is the primary output file for identifying which individuals came into cont
 	animal_local_id (text), source_case_local _id (text; See below *), duration_in_days (integer; *), start_date (Date;*), end_date (Date; *), enclosure_name (text; *)
 
 
-- animal_local_id : The identifier from Housing History of an animal that was potentitally exposed.
-- source_case_local_id : The identifier from Housing History/Infections/Diagnoses with which the first animal had contact. This field will be blank if unavailable, for example, if the program was run with the enclosure contamination input file.
+- animal_local_id : The identifier from the Population Housing History Input File of an animal that was potentially exposed.
+- source_case_local_id : The identifier from one of the Infected Individuals files of an infected animal with which the (potentially) exposed animal (animal_local_id)  had contact. This field will be blank if unavailable, for example, if the program was run with the enclosure contamination input file.
 - duration_in_days :  The duration of contact calculated by subtracting the start_date from the end_date. (Note that if the contact started and ended on the same day, a duration of "0" is given, but the contact is still reported.)
 - start_date : The beginning of the overlapping period of contact between individuals in the population and cases or contaminated environments.
 - end_date : The end of overlapping infectious period of interest.
 - enclosure_name : The location where this contact occurred.
 
 Note:  Individuals cannot have overlapping contact dates with themselves.
+
+### Remove overlap in environmental contaminations checkbox:
+
+The program can output contact dates and number of days using two different methods:  1) treat each individual move-in and move-out records as a separate contact, creating a separate environmental contamination (uncheck “remove overlap in environmental contaminations” box);  or 2) adjust the contact period to remove overlap of environmental contamination attributed to the same case that occurred in the same enclosure (default; check box “remove overlap in environmental contaminations”).  
+The distinction between these two methods can be illustrated by using “Infected Individuals With Estimated Infectious Periods Input File” with a post-exposure environmental period of 30 days.  If a case moves in-and-out of an enclosure several times during a short period, then Method 1 may over-estimate the total number exposure days that a population member experiences because  each separate move-in/move-out records generate a distinct environmental contamination period.  Method 2 was created to address this issue by removing the overlap in exposure days resulting from environmental contamination.    In method 2, the total number of days that the infectious agent remains in the environment will be truncated for a given contact if a case returns to the same within a time period that is less than the specified gamma contamination period. 
+
+#### Example files and output: 
+
+##### Population Housing History Timeline Input, w/ 30 day beta (infectious) and gamma (environmental) period:
+
+
+	Animal1, enclosureA, 1/1/2000, 1/1/2001
+	Animal2, enclosureA, 1/1/2000, 1/11/2000
+	Animal2, hospital, 1/11/2000,1/13/2000
+	Animal2, enclosureA, 1/13/2000, 1/23/2000
+
+##### Infected Individuals With Estimated Infectious Periods Input File:
+
+
+	Animal2, 1/23/2000
+
+##### Output with “remove overlap” checked (removes overlap in exposure-days):
+
+
+	Animal1, Animal2, 12, 1/1/2000, 1/13/2000, enclosureA
+	Animal1, Animal2, 40, 1/13/2000, 2/22/2000, enclosureA
+
+##### Output with “remove overlap” unchecked (calculates exposure-days for each move separately):
+
+
+	Animal1, Animal2, 40, 1/1/2000, 2/10/2000, enclosureA
+	Animal1, Animal2, 40, 1/13/2000, 2/22/2000, enclosureA
+
+
 
 
 ## Enclosure Contaminations Output file
