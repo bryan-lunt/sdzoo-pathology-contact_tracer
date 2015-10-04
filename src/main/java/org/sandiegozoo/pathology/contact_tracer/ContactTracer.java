@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.hibernate.Query;
+import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -41,6 +42,9 @@ public class ContactTracer {
 	public void process_contaminations(boolean truncate_table, boolean truncate_overlapping){
 		Session session = factory.openSession();
 		Transaction myT = session.beginTransaction();
+		
+		int numprocessed = 0;
+		int flush_every = 100;
 		
 		//Start with a clean slate?
 		if(truncate_table){
@@ -77,6 +81,13 @@ public class ContactTracer {
 				oneContamination.end_date = contamination_end;
 				
 				session.save(oneContamination);
+				
+				if(numprocessed++%flush_every == 0){
+					session.flush();
+					session.getTransaction().commit();
+					session.clear();
+					session.beginTransaction();
+				}
 			}
 			
 			session.flush();
@@ -97,7 +108,8 @@ public class ContactTracer {
 	private void truncate_overlapping_contaminations(Session session, Infection one_inf){
 		//We truncate overlapping contaminations _of the same enclosure_ here.
 		
-		
+		int num_processed = 0;
+		int flush_every = 20;
 		
 		//If we are going to truncate or combine overlapping contaminations, it should happen here.
 		Query find_contaminations_by_infection = session.createQuery("from Contamination where source_inf_id = :sinf order by enc_id.id asc, start_date asc");
@@ -126,11 +138,16 @@ public class ContactTracer {
 					previous_contam.end_date = tmp_end;
 					
 					session.update(previous_contam);
+					if(num_processed++%flush_every == 0){
+						session.flush();
+						session.clear();
+					}
 				}
 				
 				previous_contam = current_contam;
 			}
 		}
+		session.flush();
 	}
 	
 
@@ -138,6 +155,9 @@ public class ContactTracer {
 	public void process_exposures(boolean truncate){
 		Session session = factory.openSession();
 		session.beginTransaction();
+		
+		int num_processed = 0;
+		int flush_every = 100;
 		
 		//Start with a clean slate?
 		if(truncate){
@@ -148,8 +168,16 @@ public class ContactTracer {
 		}
 		
 		Query find_contaminations = session.createQuery("from Contamination");
-        List<Contamination> contaminations = (List<Contamination>)find_contaminations.list();
-        for(Contamination one_contam : contaminations){
+		
+		
+        //List<Contamination> contaminations = (List<Contamination>)find_contaminations.list();
+        //for(Contamination one_contam : contaminations){
+		find_contaminations.setFetchSize(Integer.valueOf(2000));
+		find_contaminations.setReadOnly(true);
+		//find_contaminations.setCacheable(false);
+    	ScrollableResults contaminations_resultset = find_contaminations.scroll(org.hibernate.ScrollMode.FORWARD_ONLY);
+    	while(contaminations_resultset.next()){
+    		Contamination one_contam = (Contamination)(contaminations_resultset.get(0));
         	
         	Animal original_animal = one_contam.source_inf_id == null ? null : one_contam.source_inf_id.animal_id;
         	
@@ -167,8 +195,14 @@ public class ContactTracer {
         	find_contacts.setCalendar("end", one_contam.end_date);
         	
         	
-        	List<Housing> overlapping_housing = (List<Housing>)find_contacts.list();
-        	for(Housing one_house : overlapping_housing){
+        	//List<Housing> overlapping_housing = (List<Housing>)find_contacts.list();
+        	//for(Housing one_house : overlapping_housing){
+        	find_contacts.setFetchSize(Integer.valueOf(2000));
+        	find_contacts.setReadOnly(true);
+        	//find_contacts.setCacheable(false);
+        	ScrollableResults results = find_contacts.scroll(org.hibernate.ScrollMode.FORWARD_ONLY);
+        	while(results.next()){
+        		Housing one_house = (Housing)(results.get(0));
         		
         		//TODO: Continue here
         		Calendar exposure_begin_date = date_max(one_house.move_in, one_contam.start_date);//TODO:remove the gettime
@@ -182,7 +216,16 @@ public class ContactTracer {
         		one_exposure.end_date = exposure_end_date;
         		
         		session.save(one_exposure);
+        		
+        		if(num_processed++%flush_every == 0){
+        			session.flush();
+        			session.getTransaction().commit();
+        			session.clear();
+        			session.beginTransaction();
+        		}
         	}
+        	session.flush();
+        	session.clear();
         	
         	
         }
